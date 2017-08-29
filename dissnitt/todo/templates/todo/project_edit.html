@@ -1,0 +1,26 @@
+
+<h1>Create New Project</h1>
+
+<div class="project_form">
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        {{ form.project_name.errors }}
+        {{ form.project_name.label_tag }}
+        {{ form.project_name }}
+        <br>
+        {{ form.priority.errors }}
+        {{ form.priority.label_tag }}
+        {{ form.priority }}
+        <br>
+        {{ form.completed.errors }}
+        {{ form.completed.label_tag }}
+        {{ form.completed }}
+        <br>
+        {{ form.description.errors }}
+        {{ form.description.label_tag }}
+        {{ form.description }}
+        <br>
+        <button type="submit" >Save</button>
+    </form>
+</div>

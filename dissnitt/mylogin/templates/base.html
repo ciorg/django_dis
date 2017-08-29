@@ -1,0 +1,44 @@
+{% load staticfiles %}
+
+<html>
+
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'mylogin/css/base.css' %}">
+</head>
+<head>
+    {% block head %}
+    {% endblock %}
+</head>
+
+<body>
+    <div class="ppage">
+        <div class="header">
+            <div class="hcorner">
+                <h1>Dissnitt</h1>
+            </div>
+            <div class="page_header">
+                {% block page_header %}{% endblock %}
+            </div>
+        </div>
+        <div class="side">
+            <div class="side_navigation">
+                <a href="{% url 'mylogin:logout' %}">Logout</a>
+                <br>
+                <a href="{% url 'mylogin:home' %}">Home</a>
+                <br>
+                <a href="{% url 'todo:index' %}">Project Tracking</a>
+                <br>
+                {% block sidepage %}
+                {% endblock %}
+            </div>
+        </div>
+
+        <div class="main">
+            {% block content %}
+            {% endblock %}
+
+        </div>
+    </div>
+</body>
+</html>

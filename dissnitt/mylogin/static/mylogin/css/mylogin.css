@@ -1,0 +1,20 @@
+body { background-color: #8da4bf;}
+
+.login { width: 18%;
+         margin-left: 36%;
+         margin-top: 10%;
+         padding: 2%;
+         color: white;
+         text-align: center;
+         font-family: 'Quicksand', sans-serif;
+        }
+
+.login p { font-size: 1.2em;
+           }
+
+.login button { width: 50%;
+                font-size: 0.9em;
+                color: #8da4bf;
+                border-radius: 10px;
+                background-color: white;
+                }
