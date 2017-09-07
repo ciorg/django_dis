@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
+{% load app_filters %}
 {% block head %}
 <title>Project | Dissnitt</title>
 <link rel="stylesheet" href="{% static 'todo/css/todo.css' %}">
@@ -25,13 +26,19 @@
             <th>Description</th>
             <th>Completed</th>
         </tr>
-    {% for task in project.task_set.all %}
+    {% for task in project.task_set.all|sort_by_done %}
         <tr>
             <td>{{ task.priority }}</td>
             <td>{{ task.task_name }}</td>
             <td>{{ task.created_date | date:"m/d/Y" }}</td>
             <td class="tddetalign">{{ task.description }}</td>
-            <td>{{ task.completed }}</td>
+            <td>
+                {% if task.completed == True %}
+                    <img src="{% static 'todo/images/checked.png' %}" alt="True" class="cbox"/>
+                {% else %}
+                    <img src="{% static 'todo/images/unchecked.png' %}" alt="False" class="cbox"/>
+                {% endif %}
+            </td>
             <td><a href="{% url 'todo:edit_task' pk=project.pk tk=task.pk %}">Edit</a></td>
             <td><a href="{% url 'todo:delete_task' pk=project.pk tk=task.pk %}">Delete</a></td>
             <td><a href="{% url 'todo:new_subtask' pk=project.pk tk=task.pk %}">Add SubT</a></td>

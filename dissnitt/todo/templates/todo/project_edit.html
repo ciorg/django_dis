@@ -1,9 +1,15 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block head %}
+<title>Project | Dissnitt</title>
+<link rel="stylesheet" href="{% static 'todo/css/todo.css' %}">
+{% endblock %}
 
-<h1>Create New Project</h1>
+{% block page_header %}<h1>Create New Project</h1>{% endblock %}
 
+{% block content %}
 <div class="project_form">
-    <form method="POST">
-        {% csrf_token %}
+    <form method="POST">{% csrf_token %}
         {{ form.non_field_errors }}
         {{ form.project_name.errors }}
         {{ form.project_name.label_tag }}
@@ -24,3 +30,4 @@
         <button type="submit" >Save</button>
     </form>
 </div>
+{% endblock %}

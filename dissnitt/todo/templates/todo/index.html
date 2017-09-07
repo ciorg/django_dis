@@ -4,7 +4,9 @@
 {% block head %}
 <title>My Projects | Dissnitt</title>
 <link rel="stylesheet" href="{% static 'todo/css/todo.css' %}">
+<link rel="stylesheet" href="{% static 'todo/css/colorbox.css' %}">
 <script type="text/javascript" src="{% static 'todo/javascript/todo.js' %}" ></script>
+
 {% endblock %}
 {% block page_header %}<h1>Current Projects</h1>{% endblock %}
 {% block sidepage %}
@@ -12,7 +14,6 @@
 <a href="{% url 'todo:new_project' %}">New Project</a><br>
 {% endblock %}
 {% block content %}
-
     <div class="todo_info">
         <table>
             <tr class="todo_table_header">
@@ -31,12 +32,18 @@
             <tr>
                 <td class="btd"><a href="#" onclick="toggleItemView('pr_{{project.id}}', 'pl_{{project.id}}', 'table')" id="pl_{{project.id}}">+</a></td>
                 <td class="ptd" >{{ project.priority }}</td>
-                <td class="ntd">{{ project.project_name }}</td>
-                <td class="ctd">{{ project.created_date | date:"M d,Y"}}</td>
+                <td class="ntd"><a href="{% url 'todo:detail' project.id %}">{{ project.project_name }}</a></td>
+                <td class="ctd">{{ project.created_date | date:"m/d/y"}}</td>
                 <td class="dtd">{{ project.description }}</td>
-                <td class="cotd">{{ project.completed }}</td>
+                <td class="cotd">
+                    {% if project.completed == True %}
+                        <img src="{% static 'todo/images/checked.png' %}" alt="True" class="cbox"/>
+                    {% else %}
+                        <img src="{% static 'todo/images/unchecked.png' %}" alt="False" class="cbox"/>
+                    {% endif %}
+                </td>
                 <td><a href="{% url 'todo:edit_project' project.id %}">Edit</a></td>
-                <td><a href="{% url 'todo:delete_project' project.id %}">Delete</a></td>
+                <td><a href="{% url 'todo:delete_project' project.id %}">Del</a></td>
                 <td><a href="{% url 'todo:new_task' pk=project.pk %}">+Task</a></td>
             </tr>
         </table>
@@ -45,15 +52,23 @@
         <table id="pr_{{project.id}}">
 
          {% for task in project.task_set.all|sort_by_done %}
-            <tr class="strikeout">
+            <tr {% if task.completed == True %}
+                class="completed"
+                {% endif %} >
                 <td class="btd"><a href="#" onclick="toggleItemView('st_{{task.id}}', 'tl_{{task.id}}', 'block')" id="tl_{{task.id}}">+</a></td>
                 <td class="ptd">{{ task.priority }}</td>
                 <td class="ntd">{{ task.task_name }}</td>
-                <td class="ctd">{{ task.created_date | date:"M d,Y" }}</td>
+                <td class="ctd">{{ task.created_date | date:"m/d/y" }}</td>
                 <td class="dtd">{{ task.description }}</td>
-                <td class="cotd">{{ task.completed }}</td>
+                <td class="cotd">
+                    {% if task.completed == True %}
+                        <img src="{% static 'todo/images/checked.png' %}" alt="True" class="cbox"/>
+                    {% else %}
+                        <img src="{% static 'todo/images/unchecked.png' %}" alt="False" class="cbox"/>
+                    {% endif %}
+                </td>
                 <td><a href="{% url 'todo:edit_task' pk=project.pk tk=task.pk %}">Edit</a></td>
-                <td><a href="{% url 'todo:delete_task' pk=project.pk tk=task.pk %}">Delete</a></td>
+                <td><a href="{% url 'todo:delete_task' pk=project.pk tk=task.pk %}">Del</a></td>
                 <td><a href="{% url 'todo:new_subtask' pk=project.pk tk=task.pk %}">+SubT</a></td>
             </tr>
             <tr>
@@ -75,5 +90,6 @@
         </div>
         {% endfor %}
     </div>
-    
+
+
 {% endblock %}

@@ -31,7 +31,7 @@ def new_project(request):
             project.completed = False
             project.created_date = timezone.now()
             project.save()
-            return redirect('todo:detail', pk=project.pk)
+            return redirect('todo:index')
 
     else:
         form = ProjectForm()
@@ -44,7 +44,7 @@ def edit_project(request, pk):
         form = ProjectForm(request.POST, instance=project)
         if form.is_valid():
             project.save()
-            return redirect('todo:detail', pk=project.pk)
+            return redirect('todo:index')
     else:
         form = ProjectForm(instance=project)
     return render(request, 'todo/project_edit.html', {'form': form})
@@ -65,7 +65,7 @@ def new_task(request, pk):
             task.completed = False
             task.created_date = timezone.now()
             task.save()
-            return redirect('todo:detail', pk=pk)
+            return redirect('todo:index')
     else:
         form = TaskForm()
 
@@ -78,7 +78,7 @@ def edit_task(request, pk, tk):
         form = TaskForm(request.POST, instance=task)
         if form.is_valid():
             task.save()
-            return redirect('todo:detail', pk=project.pk)
+            return redirect('todo:index')
     else:
         form = TaskForm(instance=task)
 
@@ -87,7 +87,7 @@ def edit_task(request, pk, tk):
 def delete_task(request, pk, tk):
     task = get_object_or_404(Task, pk=tk)
     task.delete()
-    return redirect('todo:detail', pk=pk)
+    return redirect('todo:index')
 
 def new_subtask(request, pk, tk):
     task_id = get_object_or_404(Task, pk=tk)
@@ -99,7 +99,7 @@ def new_subtask(request, pk, tk):
             subt.completed = False
             subt.created_date = timezone.now()
             subt.save()
-            return redirect('todo:detail', pk=pk)
+            return redirect('todo:index')
     else:
         form = SubTaskForm()
 
@@ -112,7 +112,7 @@ def edit_subtask(request, pk, sk):
         form = SubTaskForm(request.POST, instance=subtask)
         if form.is_valid():
             subtask.save()
-            return redirect('todo:detail', pk=project.pk)
+            return redirect('todo:index')
     else:
         form = SubTaskForm(instance=subtask)
 
@@ -121,7 +121,7 @@ def edit_subtask(request, pk, sk):
 def delete_subtask(request, pk, sk):
     subtask = get_object_or_404(SubTask, pk=sk)
     subtask.delete()
-    return redirect('todo:detail', pk=pk)
+    return redirect('todo:index')
 
 
 

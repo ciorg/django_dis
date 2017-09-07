@@ -6,7 +6,7 @@ class ProjectForm(forms.ModelForm):
 
     class Meta:
         model = Project
-        fields = ['project_name', 'description', 'priority']
+        fields = ['project_name', 'description', 'priority', 'completed']
 
 class TaskForm(forms.ModelForm):
 

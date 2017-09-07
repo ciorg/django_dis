@@ -1,3 +1,4 @@
 .idea/
 vir/
 *.pyc
+dissnitt/todo/__pycache__/*

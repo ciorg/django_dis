@@ -8,7 +8,7 @@ div.todo_info table {
                       text-align: center;
                       border-collapse: collapse;
                       color:  #8da4bf;
-                      font-size: 1.0em;
+                      font-size: 1.25em;
                     }
 
 
@@ -22,6 +22,11 @@ table.projects td {
                     vertical-align: bottom;
                 }
 
+table.projects a {
+                    text-decoration: none;
+                }
+
+
 td.btd {
             width: 2%;
             text-align: right;
@@ -31,7 +36,7 @@ td.btd {
 
 td.btd a {
             text-decoration: none;
-            font-size: 1.3em;
+            font-size: 1.2em;
             font-weight: bold;
             color: #304c89;
             margin-bottom: 10px;
@@ -78,10 +83,12 @@ th.dtd {
         }
 
 td.cotd {
+         text-align: center;
          width: 5%;
         }
 
 th.cotd {
+         text-align: center;
          width: 5%;
         }
 
@@ -139,15 +146,18 @@ div.project_form {
 div.task_table table {
                         margin-top: 10px;
                         display: none;
-                        border: 1px solid #5487AC;
                         border-radius: 12px;
                         -webkit-border-radius: 12px;
-                        border-collapse: separate;
-                        background-color: #e8e8ea;
+                        border-collapse: collapse;
+                        background-color: #e5f2fc;
                       }
 
 div.task_table td {
                      vertical-align: middle;
+                    }
+
+div.task_table a {
+                     text-decoration: none;
                     }
 
 div.subtasks {
@@ -160,3 +170,13 @@ div.subtasks {
                 padding-top: 1px;
                 padding-bottom: 1px;
               }
+
+img.cbox {
+            width: 35px;
+
+          }
+
+tr.completed  {
+                background-color: #e8e8ea;
+                text-decoration: line-through;
+             }
