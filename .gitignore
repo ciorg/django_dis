@@ -2,3 +2,5 @@
 vir/
 *.pyc
 dissnitt/todo/__pycache__/*
+dissnitt/db.sqlite3
+dissnitt/todo/templatetags/__pycache__/*
