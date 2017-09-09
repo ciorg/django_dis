@@ -17,7 +17,7 @@
 {% block content %}
 <div class="project_detail">
     <h3>Description: {{ project.description }}</h3>
-    <p>Tasks and subtasks:</p>
+
     <table>
         <tr class="todo_table_header">
             <th>P</th>
@@ -41,7 +41,7 @@
             </td>
             <td><a href="{% url 'todo:edit_task' pk=project.pk tk=task.pk %}">Edit</a></td>
             <td><a href="{% url 'todo:delete_task' pk=project.pk tk=task.pk %}">Delete</a></td>
-            <td><a href="{% url 'todo:new_subtask' pk=project.pk tk=task.pk %}">Add SubT</a></td>
+            <td><a href="{% url 'todo:new_subtask' pk=project.pk tk=task.pk %}">+SubT</a></td>
         </tr>
         {% for subtask in task.subtask_set.all %}
         <tr class="subt_rows">

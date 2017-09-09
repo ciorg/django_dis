@@ -1,10 +1,70 @@
 {% extends 'base.html' %}
+{% load staticfiles %}
+{% block head %}
+<title>Project | Dissnitt</title>
+<link rel="stylesheet" href="{% static 'todo/css/todo.css' %}">
+{% endblock %}
+
+{% block sidepage %}
+<hr>
+    <a href="{% url 'todo:new_project' %}">Create New Project</a><br>
+    <a href="{% url 'todo:new_task' pk=project.pk %}">Add A Task</a><br>
+{% endblock %}
+
+{% block page_header %}
+    <h1>
+        Change <span style="font-style: italic;">{{ task.task_name }}</span> :
+        <a href="{% url 'todo:detail' pk=project.pk %}">{{ project.project_name}}</a>
+    </h1>
+{% endblock %}
 
 {% block content %}
-    <h1>Add Task</h1>
+
+<div class="project_form">
     <form method="POST">{% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" >Save</button>
+        <table>
+            <tr>
+                <td>
+                    {{ form.non_field_errors }}
+                    {{ form.task_name.errors }}
+                    {{ form.task_name.label_tag }}
+                </td>
+                <td >
+                    {{ form.task_name }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {{ form.priority.errors }}
+                    {{ form.priority.label_tag }}
+                </td>
+                <td>
+                    {{ form.priority }}
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    {{ form.description.errors }}
+                    {{ form.description.label_tag }}
+                </td>
+                <td>
+                    {{ form.description }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {{ form.completed.errors }}
+                    {{ form.completed.label_tag }}
+                    {{ form.completed }}
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align:center;" >
+                    <button class="pbutton" type="submit" >Create Task</button>
+                </td>
+            </tr>
+        </table>
     </form>
-<a href="{% url 'todo:index' %}">Projects</a>
+</div>
 {% endblock %}

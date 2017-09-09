@@ -8,23 +8,28 @@
 {% block sidepage %}
 <hr>
     <a href="{% url 'todo:new_project' %}">Create New Project</a><br>
+
 {% endblock %}
 
-{% block page_header %}<h1>Edit Project - {{ project.project_name }} </h1>{% endblock %}
+{% block page_header %}
+    <h1>
+        New Task for  <a href="{% url 'todo:detail' pk=project.pk %}">{{ project.project_name}}</a>
+    </h1>
+{% endblock %}
 
 {% block content %}
+
 <div class="project_form">
     <form method="POST">{% csrf_token %}
-
         <table>
             <tr>
                 <td>
                     {{ form.non_field_errors }}
-                    {{ form.project_name.errors }}
-                    {{ form.project_name.label_tag }}
+                    {{ form.task_name.errors }}
+                    {{ form.task_name.label_tag }}
                 </td>
                 <td >
-                    {{ form.project_name }}
+                    {{ form.task_name }}
                 </td>
             </tr>
             <tr>
@@ -46,16 +51,10 @@
                     {{ form.description }}
                 </td>
             </tr>
-            <tr>
-                <td>
-                    {{ form.completed.errors }}
-                    {{ form.completed.label_tag }}
-                    {{ form.completed }}
-                </td>
-            </tr>
+
             <tr>
                 <td colspan="2" style="text-align:center;" >
-                    <button class="pbutton" type="submit" >Save Changes</button>
+                    <button class="pbutton" type="submit" >Create Task</button>
                 </td>
             </tr>
         </table>

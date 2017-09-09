@@ -36,7 +36,7 @@ def new_project(request):
     else:
         form = ProjectForm()
 
-    return render(request, 'todo/project_edit.html', {'form': form})
+    return render(request, 'todo/project_new.html', {'form': form})
 
 def edit_project(request, pk):
     project = get_object_or_404(Project, pk=pk)
@@ -47,7 +47,7 @@ def edit_project(request, pk):
             return redirect('todo:index')
     else:
         form = ProjectForm(instance=project)
-    return render(request, 'todo/project_edit.html', {'form': form})
+    return render(request, 'todo/project_edit.html', {'form': form, 'project':project})
 
 def delete_project(request, pk):
     project = get_object_or_404(Project, pk=pk)
@@ -57,6 +57,7 @@ def delete_project(request, pk):
 
 def new_task(request, pk):
     project_id = get_object_or_404(Project, pk=pk)
+    project = Project.objects.get(pk=pk)
     if request.method == 'POST':
         form = TaskForm(request.POST)
         if form.is_valid():
@@ -69,7 +70,7 @@ def new_task(request, pk):
     else:
         form = TaskForm()
 
-    return render(request, 'todo/task_edit.html', {'form':form})
+    return render(request, 'todo/task_new.html', {'form':form, 'project':project})
 
 def edit_task(request, pk, tk):
     task = get_object_or_404(Task, pk=tk)
@@ -82,7 +83,7 @@ def edit_task(request, pk, tk):
     else:
         form = TaskForm(instance=task)
 
-    return render(request, 'todo/task_edit.html', {'form': form})
+    return render(request, 'todo/task_edit.html', {'form': form, 'project':project, 'task':task})
 
 def delete_task(request, pk, tk):
     task = get_object_or_404(Task, pk=tk)
@@ -91,6 +92,7 @@ def delete_task(request, pk, tk):
 
 def new_subtask(request, pk, tk):
     task_id = get_object_or_404(Task, pk=tk)
+    project = Project.objects.get(pk=pk)
     if request.method == 'POST':
         form = SubTaskForm(request.POST)
         if form.is_valid():
@@ -103,10 +105,12 @@ def new_subtask(request, pk, tk):
     else:
         form = SubTaskForm()
 
-    return render(request, 'todo/subtask_edit.html', {'form':form})
+    return render(request, 'todo/subtask_edit.html', {'form':form, 'task':task_id, 'project':project})
 
 def edit_subtask(request, pk, sk):
     subtask = get_object_or_404(SubTask, pk=sk)
+    task_id = subtask.task
+    # task = Task.objects.get(pk=task_id)
     project = get_object_or_404(Project, pk=pk)
     if request.method == 'POST':
         form = SubTaskForm(request.POST, instance=subtask)
@@ -116,7 +120,7 @@ def edit_subtask(request, pk, sk):
     else:
         form = SubTaskForm(instance=subtask)
 
-    return render(request, 'todo/subtask_edit.html', {'form': form})
+    return render(request, 'todo/subtask_edit.html', {'form':form, 'task':task_id, 'project':project})
 
 def delete_subtask(request, pk, sk):
     subtask = get_object_or_404(SubTask, pk=sk)

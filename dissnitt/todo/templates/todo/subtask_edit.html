@@ -1,10 +1,53 @@
 {% extends 'base.html' %}
+{% load staticfiles %}
+{% block head %}
+<title>Project | Dissnitt</title>
+<link rel="stylesheet" href="{% static 'todo/css/todo.css' %}">
+{% endblock %}
+{% block sidepage %}
+<hr>
+    <a href="{% url 'todo:new_project' %}">Create New Project</a><br>
+    <a href="{% url 'todo:detail' project.pk %}">Project Details</a>
+
+{% endblock %}
+{% block page_header %}
+    <h1>
+        Add Sub Task to {{ task.task_name }}
+    </h1>
+{% endblock %}
 
 {% block content %}
-    <h1>Add SubTask</h1>
-    <form method="POST">{% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" >Save</button>
-    </form>
-<a href="{% url 'todo:index' %}">Projects</a>
+<div class="project_form">
+     <form method="POST">{% csrf_token %}
+        <table>
+            <tr>
+                 <td>
+                    {{ form.non_field_errors }}
+                    {{ form.sub_name.errors }}
+                    {{ form.sub_name.label_tag }}
+                 </td>
+            </tr>
+            <tr>
+                 <td>
+                    {{ form.sub_name }}
+                 </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <button style="margin-left: 25%;" class="pbutton" type="submit" >Save</button>
+                </td>
+            </tr>
+        </table>
+     </form>
+
+    <div class="sub_deets">
+        <h2>Project Name: {{ project.project_name }}</h2>
+        <h2>Task Name: {{ task.task_name }}</h2>
+         <ul>
+             {% for subtask in task.subtask_set.all %}
+             <li>{{ subtask.sub_name }}</li>
+             {% endfor %}
+         </ul>
+    </div>
+</div>
 {% endblock %}
