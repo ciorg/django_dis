@@ -133,7 +133,12 @@ div.project_detail table a, td {
 tr.subt_rows td, a {
                     font-weight: 200;
                     color: #5487AC;
+
                     }
+
+tr.subt_rows {
+               background-color: #e5f2fc;
+               }
 
 td.tddetalign {
                 text-align: left;
@@ -258,4 +263,10 @@ tr.completed td  {
 div.sub_deets{
                width: 40%;
                margin: auto;
+}
+
+div.incomplete_tasks{
+                      width: 60%;
+                      padding-top: 2%;
+                      margin: auto;
 }

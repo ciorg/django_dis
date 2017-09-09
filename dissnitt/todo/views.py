@@ -1,7 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.urls import reverse
 from django.views import generic
-from django.views.generic.edit import ModelFormMixin
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Project, Task, SubTask
@@ -22,6 +20,7 @@ class DetailView(LoginRequiredMixin, generic.DetailView):
     model = Project
     template_name = 'todo/detail.html'
 
+@login_required
 def new_project(request):
     if request.method == 'POST':
         form = ProjectForm(request.POST)
@@ -38,6 +37,7 @@ def new_project(request):
 
     return render(request, 'todo/project_new.html', {'form': form})
 
+@login_required
 def edit_project(request, pk):
     project = get_object_or_404(Project, pk=pk)
     if request.method == 'POST':
@@ -49,12 +49,14 @@ def edit_project(request, pk):
         form = ProjectForm(instance=project)
     return render(request, 'todo/project_edit.html', {'form': form, 'project':project})
 
+@login_required
 def delete_project(request, pk):
     project = get_object_or_404(Project, pk=pk)
     project.delete()
 
     return redirect('todo:index')
 
+@login_required
 def new_task(request, pk):
     project_id = get_object_or_404(Project, pk=pk)
     project = Project.objects.get(pk=pk)
@@ -66,12 +68,13 @@ def new_task(request, pk):
             task.completed = False
             task.created_date = timezone.now()
             task.save()
-            return redirect('todo:index')
+            return redirect('todo:detail', project.pk)
     else:
         form = TaskForm()
 
     return render(request, 'todo/task_new.html', {'form':form, 'project':project})
 
+@login_required
 def edit_task(request, pk, tk):
     task = get_object_or_404(Task, pk=tk)
     project = get_object_or_404(Project, pk=pk)
@@ -79,17 +82,19 @@ def edit_task(request, pk, tk):
         form = TaskForm(request.POST, instance=task)
         if form.is_valid():
             task.save()
-            return redirect('todo:index')
+            return redirect('todo:detail', pk)
     else:
         form = TaskForm(instance=task)
 
     return render(request, 'todo/task_edit.html', {'form': form, 'project':project, 'task':task})
 
+@login_required
 def delete_task(request, pk, tk):
     task = get_object_or_404(Task, pk=tk)
     task.delete()
-    return redirect('todo:index')
+    return redirect('todo:detail', pk)
 
+@login_required
 def new_subtask(request, pk, tk):
     task_id = get_object_or_404(Task, pk=tk)
     project = Project.objects.get(pk=pk)
@@ -101,12 +106,13 @@ def new_subtask(request, pk, tk):
             subt.completed = False
             subt.created_date = timezone.now()
             subt.save()
-            return redirect('todo:index')
+            return redirect('todo:detail', pk)
     else:
         form = SubTaskForm()
 
     return render(request, 'todo/subtask_edit.html', {'form':form, 'task':task_id, 'project':project})
 
+@login_required
 def edit_subtask(request, pk, sk):
     subtask = get_object_or_404(SubTask, pk=sk)
     task_id = subtask.task
@@ -116,17 +122,14 @@ def edit_subtask(request, pk, sk):
         form = SubTaskForm(request.POST, instance=subtask)
         if form.is_valid():
             subtask.save()
-            return redirect('todo:index')
+            return redirect('todo:detail', pk)
     else:
         form = SubTaskForm(instance=subtask)
 
     return render(request, 'todo/subtask_edit.html', {'form':form, 'task':task_id, 'project':project})
 
+@login_required
 def delete_subtask(request, pk, sk):
     subtask = get_object_or_404(SubTask, pk=sk)
     subtask.delete()
-    return redirect('todo:index')
-
-
-
-
+    return redirect('todo:detail', pk)

@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load app_filters %}
 {% load staticfiles %}
 {% block head %}
 <title>Project | Dissnitt</title>
@@ -61,10 +62,18 @@
             </tr>
             <tr>
                 <td colspan="2" style="text-align:center;" >
-                    <button class="pbutton" type="submit" >Create Task</button>
+                    <button class="pbutton" type="submit" >Save Changes</button>
                 </td>
             </tr>
         </table>
     </form>
+
+    <div class="incomplete_tasks">
+        <h3>Open Tasks:</h3>
+    {% for task in project.task_set.all|not_complete %}
+        <p>{{ task.task_name }}</p>
+    {% endfor %}
+    </div>
+
 </div>
 {% endblock %}

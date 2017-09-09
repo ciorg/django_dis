@@ -18,16 +18,3 @@ function toggleItemView(list_id, link_id, dstyle) {
         }
     }
 
-function getCheckBox(item_id, comp){
-    var item = document.getElementById(item_id);
-    console.log(item_id)
-
-    if (comp === "True") {
-        item.innerHTML = "<img src='/static/todo/images/checked.png' class='cbox' alt='True'/>";
-
-    } else {
-        item.innerHTML = "<img src='/static/todo/images/unchecked.png' class='cbox' alt='False'/>";
-
-    }
-
-}

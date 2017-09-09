@@ -30,7 +30,13 @@
          {% for project in latest_project_list %}
         <table class="projects">
             <tr>
-                <td class="btd"><a href="#" onclick="toggleItemView('pr_{{project.id}}', 'pl_{{project.id}}', 'table')" id="pl_{{project.id}}">+</a></td>
+                <td class="btd">
+                    <a href="javascript:void(0)"
+                                   onclick="toggleItemView('pr_{{project.id}}', 'pl_{{project.id}}', 'table')"
+                                   id="pl_{{project.id}}">
+                        +
+                    </a>
+                </td>
                 <td class="ptd" >{{ project.priority }}</td>
                 <td class="ntd"><a href="{% url 'todo:detail' project.id %}">{{ project.project_name }}</a></td>
                 <td class="ctd">{{ project.created_date | date:"m/d/y"}}</td>
@@ -55,10 +61,15 @@
             <tr {% if task.completed == True %}
                 class="completed"
                 {% endif %} >
-                <td class="btd"><a href="#" onclick="toggleItemView('st_{{task.id}}', 'tl_{{task.id}}', 'block')" id="tl_{{task.id}}">
-                {% if task.subtask_set.all|length > 0 %}
-                +
-                {% endif %}</a></td>
+                <td class="btd">
+                    <a href="javascript:void(0)"
+                                   onclick="toggleItemView('st_{{task.id}}', 'tl_{{task.id}}', 'block')"
+                                   id="tl_{{task.id}}">
+                        {% if task.subtask_set.all|length > 0 %}
+                        +
+                        {% endif %}
+                    </a>
+                </td>
                 <td class="ptd">{{ task.priority }}</td>
                 <td class="ntd">{{ task.task_name }}</td>
                 <td class="ctd">{{ task.created_date | date:"m/d/y" }}</td>

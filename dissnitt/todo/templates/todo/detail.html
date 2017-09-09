@@ -27,7 +27,9 @@
             <th>Completed</th>
         </tr>
     {% for task in project.task_set.all|sort_by_done %}
-        <tr>
+        <tr {% if task.completed == True %}
+                class="completed"
+                {% endif %}>
             <td>{{ task.priority }}</td>
             <td>{{ task.task_name }}</td>
             <td>{{ task.created_date | date:"m/d/Y" }}</td>
@@ -44,13 +46,16 @@
             <td><a href="{% url 'todo:new_subtask' pk=project.pk tk=task.pk %}">+SubT</a></td>
         </tr>
         {% for subtask in task.subtask_set.all %}
-        <tr class="subt_rows">
-            <td></td><td>{{subtask.priority}}</td>
-            <td>{{subtask.created_date | date:"m/d/Y" }}</td>
-            <td class="tddetalign">{{ subtask.sub_name}}</td>
-            <td>{{ subtask.completed }}</td>
+        <tr class="subt_rows" >
+            <td></td><td></td>
+            <td></td>
+            <td class="tddetalign" colspan="2">
+                {{ subtask.sub_name}}
+            </td>
+
             <td><a href="{% url 'todo:edit_subtask' pk=project.pk sk=subtask.pk %}">Edit</a></td>
             <td><a href="{% url 'todo:delete_subtask' pk=project.pk sk=subtask.pk %}">Delete</a></td>
+            <td></td>
         </tr>
         {% endfor %}
     {% endfor %}

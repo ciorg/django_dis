@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
+{% load app_filters %}
 {% block head %}
 <title>Project | Dissnitt</title>
 <link rel="stylesheet" href="{% static 'todo/css/todo.css' %}">
@@ -59,5 +60,12 @@
             </tr>
         </table>
     </form>
+
+     <div class="incomplete_tasks">
+        <h3>Open Tasks:</h3>
+    {% for task in project.task_set.all|not_complete %}
+        <p>{{ task.task_name }}</p>
+    {% endfor %}
+    </div>
 </div>
 {% endblock %}
