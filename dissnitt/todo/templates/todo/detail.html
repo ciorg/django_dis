@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
-{% load app_filters %}
+    {% load app_filters %}
 {% block head %}
 <title>Project | Dissnitt</title>
 <link rel="stylesheet" href="{% static 'todo/css/todo.css' %}">
@@ -9,13 +9,18 @@
 {% block page_header %}<h1>{{ project.priority}} - {{ project.project_name}}</h1>{% endblock %}
 {% block sidepage %}
 <hr>
+<a href="{% url 'todo:new_project' %}">Create New Project</a><br>
 <a href="{% url 'todo:edit_project' pk=project.pk %}">Edit Project</a><br>
 <a href="{% url 'todo:new_task' pk=project.pk %}">Add A Task</a><br>
-<a href="{% url 'todo:new_project' %}">Create New Project</a><br>
 {% endblock %}
 
 {% block content %}
 <div class="project_detail">
+    <p>
+        <a href="{% url 'todo:new_project' %}">Create New Project</a> |
+        <a href="{% url 'todo:edit_project' pk=project.pk %}">Edit Project</a> |
+        <a href="{% url 'todo:new_task' pk=project.pk %}">Add A Task</a>
+    </p>
     <h3>Description: {{ project.description }}</h3>
 
     <table>
@@ -47,12 +52,13 @@
         </tr>
         {% for subtask in task.subtask_set.all %}
         <tr class="subt_rows" >
-            <td></td><td></td>
             <td></td>
-            <td class="tddetalign" colspan="2">
+            <td></td>
+            <td></td>
+            <td class="tddetalign" colspan="1">
                 {{ subtask.sub_name}}
             </td>
-
+            <td></td>
             <td><a href="{% url 'todo:edit_subtask' pk=project.pk sk=subtask.pk %}">Edit</a></td>
             <td><a href="{% url 'todo:delete_subtask' pk=project.pk sk=subtask.pk %}">Delete</a></td>
             <td></td>
