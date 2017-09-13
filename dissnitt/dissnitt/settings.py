@@ -35,6 +35,7 @@ LOGIN_URL = 'mylogin:login'
 INSTALLED_APPS = [
     'mylogin.apps.MyloginConfig',
     'todo.apps.TodoConfig',
+    'notes.apps.NotesConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

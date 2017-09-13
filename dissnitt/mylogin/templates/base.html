@@ -26,11 +26,13 @@
         <div class="side">
             <div class="side_navigation">
                 <a href="{% url 'mylogin:logout' %}">Logout</a>
-                <br>
+                <br/>
                 <a href="{% url 'mylogin:home' %}">Home</a>
-                <br>
+                <br/>
                 <a href="{% url 'todo:index' %}">Project Tracking</a>
-                <br>
+                <br/>
+                <a href="{% url 'notes:index' %}">Notes</a>
+                <br/>
                 {% block sidepage %}
                 {% endblock %}
             </div>

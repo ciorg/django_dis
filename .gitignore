@@ -4,4 +4,5 @@ vir/
 dissnitt/todo/__pycache__/*
 dissnitt/db.sqlite3
 dissnitt/todo/templatetags/__pycache__/*
-dissnitt/dissnitt/__pycache__/
+dissnitt/dissnitt/__pycache__/*
+dissnitt/mylogin/__pycache__/*
