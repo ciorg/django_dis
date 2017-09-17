@@ -13,7 +13,8 @@ class IndexView(LoginRequiredMixin, generic.ListView):
     context_object_name = 'latest_project_list'
 
     def get_queryset(self):
-        return Project.objects.order_by('priority')
+        user = self.request.user
+        return Project.objects.filter(owner__pk=user.pk).order_by('priority')
 
 class DetailView(LoginRequiredMixin, generic.DetailView):
 
