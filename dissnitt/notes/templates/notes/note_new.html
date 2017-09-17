@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load app_filters %}
+{% block head %}
+<title>Note | Dissnitt</title>
+{% endblock %}
+
+{% block sidepage %}
+<hr>
+
+{% endblock %}
+
+{% block page_header %}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="project_form">
+    <form method="POST">
+        {% csrf_token %}
+        <table>
+            <tr>
+                <td>
+                    {{ form.non_field_errors }}
+                    {{ form.title.errors }}
+                    {{ form.title.label_tag }}
+                </td>
+                <td >
+                    {{ form.title }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {{ form.body.errors }}
+                    {{ form.body.label_tag }}
+                </td>
+                <td>
+                    {{ form.body }}
+                </td>
+            </tr>
+
+
+            <tr>
+                <td colspan="2" style="text-align:center;" >
+                    <button class="pbutton" type="submit" >Create New Note</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+
+</div>
+{% endblock %}
