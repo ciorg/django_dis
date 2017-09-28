@@ -52,4 +52,5 @@ def edit_note(request, pk):
 def delete_note(request, pk):
     note = get_object_or_404(Note, pk=pk)
     note.delete()
-    return redirect(request, 'notes:index' )
+    return redirect('notes:index')
+
