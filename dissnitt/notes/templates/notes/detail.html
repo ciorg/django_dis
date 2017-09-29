@@ -10,5 +10,30 @@
 {% block sidepage %}
 {% endblock %}
 {% block content %}
-    {{ note.title }}
+    <h2>{{ note.title }}</h2>
+    <p>
+        {{ note.body }}<br>
+        {{ note.created_date }}<br>
+        {{ note.tags }}<br>
+    </p>
+    <h3>Add a Tag to the Note</h3>
+     <form method="POST">{% csrf_token %}
+     <table>
+            <tr>
+                <td>
+                    {{ form.non_field_errors }}
+                    {{ form.title.errors }}
+                    {{ form.title.label_tag }}
+                </td>
+                <td >
+                    {{ form.name }}
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align:center;" >
+                    <button class="pbutton" type="submit" >Add Tag</button>
+                </td>
+            </tr>
+     </table>
+     </form>
 {% endblock %}
