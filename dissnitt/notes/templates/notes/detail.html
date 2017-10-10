@@ -8,13 +8,21 @@
     <h1>Notes</h1>
 {% endblock %}
 {% block sidepage %}
+     <hr>
+        <a href="{% url 'notes:new_note' %}">New Note</a>
+    <hr>
+        {% for tag in tags %}
+            <a href="{% url 'notes:by_tag' tag.id%}">{{ tag.name}}</a><br>
+        {% endfor %}
 {% endblock %}
 {% block content %}
     <h2>{{ note.title }}</h2>
     <p>
         {{ note.body }}<br>
         {{ note.created_date }}<br>
-        {{ note.tags }}<br>
+        {% for tag in note.tags.all %}
+          <a href="{% url 'notes:by_tag' tag.id %}">{{ tag }}</a>
+        {% endfor %}
     </p>
     <h3>Add a Tag to the Note</h3>
      <form method="POST">{% csrf_token %}

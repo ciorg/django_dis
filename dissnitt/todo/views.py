@@ -16,6 +16,7 @@ class IndexView(LoginRequiredMixin, generic.ListView):
         user = self.request.user
         return Project.objects.filter(owner__pk=user.pk).order_by('priority')
 
+
 class DetailView(LoginRequiredMixin, generic.DetailView):
 
     model = Project

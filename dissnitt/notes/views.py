@@ -19,6 +19,10 @@ class IndexView(LoginRequiredMixin, generic.ListView):
         user = self.request.user
         return Note.objects.filter(owner__pk=user.id)
 
+    def get_context_data(self, **kwargs):
+        context = super(IndexView, self).get_context_data(**kwargs)
+        context['tags'] = Tag.objects.all()
+        return context
 
 class TagFormView(SingleObjectMixin, generic.FormView):
 
@@ -27,20 +31,20 @@ class TagFormView(SingleObjectMixin, generic.FormView):
 
     def post(self, request, *args, **kwargs):
         form = request.POST
-        ntag = Tag
-        ntag.name = str(form['name'])
-        # check if the tag already exists
-        # if it exists add tage to note
-        # if does not exist create tag then add it to form
-        ntag.save()
+        tag_names = str(form['name']).split(" ")
+        note = Note.objects.get(pk=kwargs['pk'])
 
-        self.object = self.get_object()
+        for n in tag_names:
+            try:
+                tag_obj = Tag.objects.get(name=n)
 
+            except Tag.DoesNotExist:
+                tag_obj = Tag(name=n)
+                tag_obj.save()
 
+            note.tags.add(tag_obj)
 
-    def get_success_url(self):
-        redirect('notes:detail', self.object.pk)
-
+        return redirect('notes:detail', note.pk)
 
 class NoteView(LoginRequiredMixin, generic.DetailView):
 
@@ -50,10 +54,12 @@ class NoteView(LoginRequiredMixin, generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super(NoteView, self).get_context_data(**kwargs)
         context['form'] = TagForm
+        context['tags'] = Tag.objects.all()
         return context
 
 
 class DetailView(LoginRequiredMixin, View):
+
     def get(self, request, *args, **kwargs):
         view = NoteView.as_view()
         return view(request, *args, **kwargs)
@@ -95,3 +101,13 @@ def delete_note(request, pk):
     note.delete()
     return redirect('notes:index')
 
+
+class ByTagDetailView(LoginRequiredMixin, generic.DetailView):
+
+    model = Tag
+    template_name = 'notes/by_tag_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ByTagDetailView, self).get_context_data(**kwargs)
+        context['tags'] = Tag.objects.all()
+        return context

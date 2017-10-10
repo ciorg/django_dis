@@ -8,9 +8,16 @@
     <h1>Notes</h1>
 {% endblock %}
 {% block sidepage %}
-<hr>
-<a href="{% url 'notes:new_note' %}">New Note</a>
+    <hr>
+        <a href="{% url 'notes:new_note' %}">New Note</a>
+    <hr>
+
+    <h3>Tags</h3>
+        {% for tag in tags %}
+            <p><a href="{% url 'notes:by_tag' tag.id %}">{{tag.name}}</a></p>
+        {% endfor %}
 {% endblock %}
+
 {% block content %}
     {% for note in note_list %}
         <p>
@@ -20,9 +27,7 @@
             Body: {{ note.body }}
         </p>
             {% for tag in note.tags.all %}
-            <p>
-                {{ tag }}
-            </p>
+                <a href="{% url 'notes:by_tag' tag.id %}">{{ tag }}</a>
             {% endfor %}
         <p>
             <a href="{% url 'notes:edit_note' note.id %}">Edit</a>
