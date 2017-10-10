@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load app_filters %}
+{% block head %}
+    <title>Tags | Dissnitt</title>
+{% endblock %}
+{% block page_header %}
+    <h1>Tags</h1>
+{% endblock %}
+{% block sidepage %}
+    <hr>
+        <a href="{% url 'notes:new_note' %}">New Note</a>
+    <hr>
+        {% for tag in tags %}
+            <a href="{% url 'notes:by_tag' tag.id%}">{{ tag.name}}</a><br>
+        {% endfor %}
+{% endblock %}
+{% block content %}
+
+    <p>
+       {{ tag.name }}
+    </p>
+    <p>
+        {% for note in tag.note_set.all %}
+            <a href="{% url 'notes:detail' note.id %}">{{ note.title }}</a><br>
+        {% endfor %}
+    </p>
+
+{% endblock %}
