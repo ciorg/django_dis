@@ -1,13 +1,11 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import generic, View
 from django.utils import timezone
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Note, Tag
 from .forms import NoteForm, TagForm
-from django.urls import reverse
-from django.http import HttpResponseForbidden
 from django.views.generic.detail import SingleObjectMixin
-
 
 
 class IndexView(LoginRequiredMixin, generic.ListView):
@@ -21,7 +19,8 @@ class IndexView(LoginRequiredMixin, generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super(IndexView, self).get_context_data(**kwargs)
-        context['tags'] = get_tags()
+        user = self.request.user
+        context['tags'] = get_tags(user.id)
         return context
 
 class TagFormView(SingleObjectMixin, generic.FormView):
@@ -39,7 +38,7 @@ class TagFormView(SingleObjectMixin, generic.FormView):
                 tag_obj = Tag.objects.get(name=n)
 
             except Tag.DoesNotExist:
-                tag_obj = Tag(name=n)
+                tag_obj = Tag(name=n, owner=request.user)
                 tag_obj.save()
 
             note.tags.add(tag_obj)
@@ -53,8 +52,9 @@ class NoteView(LoginRequiredMixin, generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(NoteView, self).get_context_data(**kwargs)
+        user = self.request.user
         context['form'] = TagForm
-        context['tags'] = get_tags()
+        context['tags'] = get_tags(user.id)
         return context
 
 
@@ -72,9 +72,12 @@ class DetailView(LoginRequiredMixin, View):
 def get_notes(user_id):
     return Note.objects.filter(owner=user_id)
 
-def get_tags():
-    return Tag.objects.all().order_by('name')
+def get_tags(user_id):
+    all_tags = Tag.objects.all().filter(owner=user_id).order_by('name')
+    tags_w_count = [t for t in all_tags if t.note_set.all().count() > 0]
+    return tags_w_count
 
+@login_required
 def new_note(request):
     if request.method == 'POST':
         form = NoteForm(request.POST)
@@ -93,6 +96,7 @@ def new_note(request):
 
     return render(request, 'notes/note_new.html', {'form': form, 'notes': notes})
 
+@login_required
 def edit_note(request, pk):
     note = get_object_or_404(Note, pk=pk)
     if request.method == 'POST':
@@ -108,6 +112,7 @@ def edit_note(request, pk):
 
     return render(request, 'notes/note_new.html', {'form': form, 'note': note, 'notes':notes})
 
+@login_required
 def delete_note(request, pk):
     note = get_object_or_404(Note, pk=pk)
     note.delete()
@@ -121,5 +126,6 @@ class ByTagDetailView(LoginRequiredMixin, generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(ByTagDetailView, self).get_context_data(**kwargs)
-        context['tags'] = get_tags()
+        user = self.request.user
+        context['tags'] = get_tags(user.id)
         return context
