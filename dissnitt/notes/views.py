@@ -17,11 +17,11 @@ class IndexView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         user = self.request.user
-        return Note.objects.filter(owner__pk=user.id)
+        return Note.objects.filter(owner__pk=user.id).order_by('created_date')
 
     def get_context_data(self, **kwargs):
         context = super(IndexView, self).get_context_data(**kwargs)
-        context['tags'] = Tag.objects.all()
+        context['tags'] = get_tags()
         return context
 
 class TagFormView(SingleObjectMixin, generic.FormView):
@@ -54,7 +54,7 @@ class NoteView(LoginRequiredMixin, generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super(NoteView, self).get_context_data(**kwargs)
         context['form'] = TagForm
-        context['tags'] = Tag.objects.all()
+        context['tags'] = get_tags()
         return context
 
 
@@ -69,6 +69,12 @@ class DetailView(LoginRequiredMixin, View):
         return view(request, *args, **kwargs)
 
 
+def get_notes(user_id):
+    return Note.objects.filter(owner=user_id)
+
+def get_tags():
+    return Tag.objects.all().order_by('name')
+
 def new_note(request):
     if request.method == 'POST':
         form = NoteForm(request.POST)
@@ -82,7 +88,10 @@ def new_note(request):
     else:
         form = NoteForm()
 
-    return render(request, 'notes/note_new.html', {'form': form})
+    user = request.user
+    notes = get_notes(user.id)
+
+    return render(request, 'notes/note_new.html', {'form': form, 'notes': notes})
 
 def edit_note(request, pk):
     note = get_object_or_404(Note, pk=pk)
@@ -94,7 +103,10 @@ def edit_note(request, pk):
     else:
         form = NoteForm(instance=note)
 
-    return render(request, 'notes/note_new.html', {'form': form, 'note': note})
+    user = request.user
+    notes = get_notes(user.id)
+
+    return render(request, 'notes/note_new.html', {'form': form, 'note': note, 'notes':notes})
 
 def delete_note(request, pk):
     note = get_object_or_404(Note, pk=pk)
@@ -109,5 +121,5 @@ class ByTagDetailView(LoginRequiredMixin, generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(ByTagDetailView, self).get_context_data(**kwargs)
-        context['tags'] = Tag.objects.all()
+        context['tags'] = get_tags()
         return context

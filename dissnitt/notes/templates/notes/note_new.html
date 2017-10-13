@@ -1,52 +1,46 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
-{% load app_filters %}
+{% load notes_app_filters %}
 {% block head %}
-<title>Note | Dissnitt</title>
+    <title>Notes | Dissnitt</title>
+    <link rel="stylesheet" href="{% static 'notes/css/notes.css' %}">
 {% endblock %}
 
 {% block sidepage %}
-<hr>
+    <hr>
+    <h3 style="color: #304c89;" >Notes</h3>
+    {% for note in notes %}
+        <a href="{% url 'notes:detail' note.id %}">{{ note.title }}</a><br>
+    {% endfor %}
 
 {% endblock %}
 
 {% block page_header %}
+<h1>Create a New Note</h1>
 
 {% endblock %}
 
 {% block content %}
 
-<div class="project_form">
+<div class="note_form">
     <form method="POST">
         {% csrf_token %}
-        <table>
-            <tr>
-                <td>
-                    {{ form.non_field_errors }}
-                    {{ form.title.errors }}
-                    {{ form.title.label_tag }}
-                </td>
-                <td >
-                    {{ form.title }}
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    {{ form.body.errors }}
-                    {{ form.body.label_tag }}
-                </td>
-                <td>
-                    {{ form.body }}
-                </td>
-            </tr>
-
-
-            <tr>
-                <td colspan="2" style="text-align:center;" >
-                    <button class="pbutton" type="submit" >Create New Note</button>
-                </td>
-            </tr>
-        </table>
+        <p>
+            {{ form.non_field_errors }}
+            {{ form.title.errors }}
+        </p>
+        <p>
+            {{ form.title }}
+        </p>
+        <p>
+            {{ form.body.errors }}
+        </p>
+        <p>
+            {{ form.body }}
+        </p>
+        <p>
+            <button class="nbutton" type="submit" >Create New Note</button>
+        </p>
     </form>
 
 </div>

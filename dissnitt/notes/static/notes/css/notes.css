@@ -1,0 +1,111 @@
+div.note_index {
+                 width: 80%;
+                 margin: auto;
+                }
+
+a.note_title {
+               font-size: 2.0em;
+               font-weight: bold;
+
+              }
+
+div.note_index a {
+                    text-decoration: none;
+                    color: #67788c;
+                  }
+
+
+div.note_tags a {
+                font-size: 0.8em;
+                color: #304c89;
+                }
+
+p.note_body {
+                font-size: 1.25em;
+                color: #38414c;
+            }
+
+div.note_form  {
+                  padding-top: 3%;
+                  margin: auto;
+                  text-align: center;
+                }
+
+input[type=text] {
+                    border-style:none;
+                    border: 2px solid #8da4bf;
+                    border-radius: 8px;
+                    -webkit-border-radius: 8px;
+                    width: 40%;
+                    font-size: 1.3em;
+                    color: #8da4bf;
+                  }
+
+textarea {
+                border-style:none;
+                border: 2px solid #8da4bf;
+                border-radius: 8px;
+                -webkit-border-radius: 8px;
+                width: 80%;
+                height: 300px;
+                font-size: 1.0em;
+                color: #8da4bf;
+                resize: none;
+          }
+
+.nbutton {
+           width: 30%;
+           height: 30px;
+           border-radius: 8px;
+           text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+           background-color: #5487AC;
+           color: white;
+           font-size: 0.8em;
+}
+
+div.note_details {
+                background-color: white;
+                text-align: left;
+                padding-left: 10px;
+                border: 1px solid #5487AC;
+                border-radius: 12px;
+                -webkit-border-radius: 12px;
+                padding-top: 1px;
+                padding-bottom: 1px;
+                display: none;
+}
+
+div.detail_tags{
+    background-color: #5487AC;
+    border: 0px solid #5487AC;
+    border-radius: 0 0 12 12px;
+    -webkit-border-radius: 0 0 12px 12px;
+    margin-left: -10px;
+    margin-bottom: -1px;
+
+}
+
+div.detail_tags a{
+    color: white;
+    margin-left: 10px;
+
+}
+
+div.dp_note_details {
+                margin: auto;
+                width: 75%;
+                background-color: white;
+                text-align: left;
+                padding-left: 10px;
+                border: 1px solid #5487AC;
+                border-radius: 12px;
+                -webkit-border-radius: 12px;
+                padding-top: 1px;
+                padding-bottom: 1px;
+}
+
+div.add_tags{
+    width: 80%;
+    margin: auto;
+    text-align: center;
+}

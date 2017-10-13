@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
-{% load app_filters %}
+{% load todo_app_filters %}
 {% block head %}
 <title>My Projects | Dissnitt</title>
 <link rel="stylesheet" href="{% static 'todo/css/todo.css' %}">
@@ -32,8 +32,8 @@
             <tr>
                 <td class="btd">
                     <a href="javascript:void(0)"
-                                   onclick="toggleItemView('pr_{{project.id}}', 'pl_{{project.id}}', 'table')"
-                                   id="pl_{{project.id}}">
+                       onclick="toggleItemView('pr_{{project.id}}', 'pl_{{project.id}}', 'table')"
+                       id="pl_{{project.id}}">
                         +
                     </a>
                 </td>
@@ -63,8 +63,8 @@
                 {% endif %} >
                 <td class="btd">
                     <a href="javascript:void(0)"
-                                   onclick="toggleItemView('st_{{task.id}}', 'tl_{{task.id}}', 'block')"
-                                   id="tl_{{task.id}}">
+                       onclick="toggleItemView('st_{{task.id}}', 'tl_{{task.id}}', 'block')"
+                       id="tl_{{task.id}}">
                         {% if task.subtask_set.all|length > 0 %}
                         +
                         {% endif %}

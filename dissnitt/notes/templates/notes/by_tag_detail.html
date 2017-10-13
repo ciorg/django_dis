@@ -1,29 +1,49 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
-{% load app_filters %}
+{% load notes_app_filters %}
 {% block head %}
     <title>Tags | Dissnitt</title>
+    <link rel="stylesheet" href="{% static 'notes/css/notes.css' %}">
+    <script type="text/javascript" src="{% static 'notes/javascript/notes.js' %}" ></script>
 {% endblock %}
 {% block page_header %}
-    <h1>Tags</h1>
+    <h1>Tag: {{ tag.name }} </h1>
 {% endblock %}
 {% block sidepage %}
     <hr>
         <a href="{% url 'notes:new_note' %}">New Note</a>
     <hr>
+    <h3 style="color: #304c89;" >Tags</h3>
+    <div class="note_tags">
         {% for tag in tags %}
-            <a href="{% url 'notes:by_tag' tag.id%}">{{ tag.name}}</a><br>
+            <a href="{% url 'notes:by_tag' tag.id %}">{{tag.name}}</a>
         {% endfor %}
+    </div>
 {% endblock %}
 {% block content %}
-
-    <p>
-       {{ tag.name }}
-    </p>
-    <p>
+    <div class="note_index">
         {% for note in tag.note_set.all %}
-            <a href="{% url 'notes:detail' note.id %}">{{ note.title }}</a><br>
+         <p>
+                <a class="note_title" href="{% url 'notes:detail' note.id %}">{{ note.title }}</a><br>
+                    {{ note.created_date| date:"M d, Y" }}
+                    | <a href="{% url 'notes:edit_note' note.id %}">Edit</a>
+                    | <a href="{% url 'notes:delete_note' note.id %}">Delete</a>
+                    |
+                <a href="javascript:void(0)" onclick="toggleDetailsView('{{ note.id }}', 'link_{{ note.id }}')" id="link_{{note.id}}">
+                    +Details
+                </a>
+            </p>
+            <div class="note_details" id="{{note.id}}">
+                <p class="note_body">
+                    {{ note.body|truncatechars:100 }}
+                </p>
+                <div class="detail_tags">
+                    {% for tag in note.tags.all|sort_by_name %}
+                        <a href="{% url 'notes:by_tag' tag.id %}">{{ tag }}</a>
+                    {% endfor %}
+                </div>
+            </div>
         {% endfor %}
-    </p>
+    </div>
 
 {% endblock %}
