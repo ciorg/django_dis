@@ -15,10 +15,12 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from mylogin import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^mylogin/', include('mylogin.urls')),
     url(r'^todo/', include('todo.urls')),
-    url(r'^notes/', include('notes.urls'))
+    url(r'^notes/', include('notes.urls')),
+    url(r'^$', views.home, name="home")
 ]
