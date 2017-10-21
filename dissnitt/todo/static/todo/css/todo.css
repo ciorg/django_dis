@@ -19,7 +19,9 @@ tr.todo_table_header th {
 
 
 table.projects td {
-                    vertical-align: bottom;
+                    vertical-align: top;
+                    padding-bottom: 5px;
+                    padding-top: 5px;
                 }
 
 table.projects a {
@@ -30,8 +32,7 @@ table.projects a {
 td.btd {
             width: 2%;
             text-align: right;
-            vertical-align: top;
-
+            line-height: 1em;
         }
 
 td.btd a {
@@ -39,7 +40,6 @@ td.btd a {
             font-size: 1.2em;
             font-weight: bold;
             color: #304c89;
-            margin-bottom: 10px;
           }
 
 th.btd {
@@ -234,7 +234,8 @@ div.subtasks {
               }
 
 img.cbox {
-            width: 35px;
+            width: 30px;
+            height: 30px;
 
           }
 

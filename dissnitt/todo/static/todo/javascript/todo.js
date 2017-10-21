@@ -9,7 +9,6 @@ function toggleItemView(list_id, link_id, dstyle) {
             items.style.display = "none";
             link.innerHTML = "+";
             link.style.color = "#304c89";
-
         } else {
             items.style.display = dstyle;
             link.innerHTML = "-";
