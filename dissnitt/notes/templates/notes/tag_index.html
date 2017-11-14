@@ -7,14 +7,14 @@
     <script type="text/javascript" src="{% static 'notes/javascript/notes.js' %}" ></script>
 {% endblock %}
 {% block page_header %}
-    <h1>Tags</h1>
+    <h1>All The Tags</h1>
 {% endblock %}
 {% block sidepage %}
     <hr>
         <a href="{% url 'notes:new_note' %}">New Note</a>
     <hr>
 
-    <h3 style="color: #304c89;" >Tags</h3>
+    <h3 style="color: #304c89;" ><a href="{% url 'notes:tags' %}">Tags</a></h3>
     <div class="note_tags">
         {% for tag in tag_list %}
             <a href="{% url 'notes:by_tag' tag.id %}">{{tag.name}}</a>
@@ -23,12 +23,12 @@
 {% endblock %}
 {% block content %}
  <div class="tag_index">
-     <p>All the Tags</p>
-    {% for tag in tag_list %}
+    {% for tag in tag_list|sort_tags_by_count_name %}
         <p>
             <a href="{% url 'notes:by_tag' tag.id %}">{{tag.name}}</a>
             ({{ tag.note_set.all|length }})
-            <a href="javascript:void(0)" onclick="toggleDetailsView('tag_{{ tag.id }}', 'link_{{ tag.id }}')" id="link_{{tag.id}}">+Details</a><br>
+            <a href="javascript:void(0)" onclick="toggleDetailsView('tag_{{ tag.id }}', 'link_{{ tag.id }}')" id="link_{{tag.id}}">+Details</a>
+            | <a href="{% url 'notes:delete_tag' tag.id %}">Delete</a><br>
             <div class="note_list" style="display: none;" id="tag_{{tag.id}}">
                 <ul>
                     {% for note in tag.note_set.all %}

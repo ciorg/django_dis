@@ -11,4 +11,5 @@ urlpatterns = [
     url(r'^note/(?P<pk>[0-9]+)/delete/$', views.delete_note, name='delete_note'),
     url(r'^tag/(?P<pk>[0-9]+)/$', views.ByTagDetailView.as_view(), name='by_tag'),
     url(r'^tags/$', views.TagIndexView.as_view(), name='tags'),
+    url(r'^tag/(?P<pk>[0-9]+)/delete/$', views.delete_tag, name='delete_tag')
 ]

@@ -14,7 +14,7 @@
     <hr>
     <a href="{% url 'notes:edit_note' note.id %}">Edit</a><br>
     <a href="{% url 'notes:delete_note' note.id %}">Delete</a>
-        <h3 style="color: #304c89;" >Tags</h3>
+        <h3 style="color: #304c89;" ><a href="{% url 'notes:tags' %}">Tags</a></h3>
     <div class="note_tags">
         {% for tag in tags %}
             <a href="{% url 'notes:by_tag' tag.id %}">{{tag.name}}</a>

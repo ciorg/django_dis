@@ -14,7 +14,7 @@ class IndexView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         user = self.request.user
-        return Project.objects.filter(owner__pk=user.pk).order_by('priority')
+        return Project.objects.filter(owner__pk=user.pk).order_by('completed', 'priority')
 
 
 class DetailView(LoginRequiredMixin, generic.DetailView):

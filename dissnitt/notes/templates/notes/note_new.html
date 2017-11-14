@@ -8,7 +8,7 @@
 
 {% block sidepage %}
     <hr>
-    <h3 style="color: #304c89;" >Notes</h3>
+    <h3 style="color: #304c89;" ><a href="{% url 'notes:tags' %}">Tags</a></h3>
     {% for note in notes %}
         <a href="{% url 'notes:detail' note.id %}">{{ note.title }}</a><br>
     {% endfor %}

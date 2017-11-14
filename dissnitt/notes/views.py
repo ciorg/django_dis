@@ -23,6 +23,7 @@ class IndexView(LoginRequiredMixin, generic.ListView):
         context['tags'] = get_tags(user.id)
         return context
 
+
 class TagFormView(SingleObjectMixin, generic.FormView):
 
     form_class = TagForm
@@ -119,6 +120,13 @@ def delete_note(request, pk):
     return redirect('notes:index')
 
 
+@login_required
+def delete_tag(request, pk):
+    tag = get_object_or_404(Tag, pk=pk)
+    tag.delete()
+    return redirect('notes:tags')
+
+
 class ByTagDetailView(LoginRequiredMixin, generic.DetailView):
 
     model = Tag
@@ -130,6 +138,7 @@ class ByTagDetailView(LoginRequiredMixin, generic.DetailView):
         context['tags'] = get_tags(user.id)
         return context
 
+
 class TagIndexView(LoginRequiredMixin, generic.ListView):
 
     template_name = 'notes/tag_index.html'
@@ -138,4 +147,3 @@ class TagIndexView(LoginRequiredMixin, generic.ListView):
     def get_queryset(self):
         user = self.request.user
         return get_tags(user.id)
-
