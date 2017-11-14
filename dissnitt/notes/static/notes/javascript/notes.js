@@ -13,6 +13,6 @@ function toggleDetailsView(note_id, link_id) {
         } else {
             item.style.display = "block";
             link.innerHTML = "-Details";
-            link.style.color = "#304c89";
+            link.style.color = "#F90707";
         }
     }

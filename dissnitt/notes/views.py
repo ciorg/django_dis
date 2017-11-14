@@ -129,3 +129,13 @@ class ByTagDetailView(LoginRequiredMixin, generic.DetailView):
         user = self.request.user
         context['tags'] = get_tags(user.id)
         return context
+
+class TagIndexView(LoginRequiredMixin, generic.ListView):
+
+    template_name = 'notes/tag_index.html'
+    context_object_name = 'tag_list'
+
+    def get_queryset(self):
+        user = self.request.user
+        return get_tags(user.id)
+

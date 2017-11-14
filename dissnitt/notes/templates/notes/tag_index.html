@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load notes_app_filters %}
+{% block head %}
+    <title>Tags | Dissnitt</title>
+    <link rel="stylesheet" href="{% static 'notes/css/notes.css' %}">
+    <script type="text/javascript" src="{% static 'notes/javascript/notes.js' %}" ></script>
+{% endblock %}
+{% block page_header %}
+    <h1>Tags</h1>
+{% endblock %}
+{% block sidepage %}
+    <hr>
+        <a href="{% url 'notes:new_note' %}">New Note</a>
+    <hr>
+
+    <h3 style="color: #304c89;" >Tags</h3>
+    <div class="note_tags">
+        {% for tag in tag_list %}
+            <a href="{% url 'notes:by_tag' tag.id %}">{{tag.name}}</a>
+        {% endfor %}
+    </div>
+{% endblock %}
+{% block content %}
+ <div class="tag_index">
+     <p>All the Tags</p>
+    {% for tag in tag_list %}
+        <p>
+            <a href="{% url 'notes:by_tag' tag.id %}">{{tag.name}}</a>
+            ({{ tag.note_set.all|length }})
+            <a href="javascript:void(0)" onclick="toggleDetailsView('tag_{{ tag.id }}', 'link_{{ tag.id }}')" id="link_{{tag.id}}">+Details</a><br>
+            <div class="note_list" style="display: none;" id="tag_{{tag.id}}">
+                <ul>
+                    {% for note in tag.note_set.all %}
+                        <li><a href="{% url 'notes:detail' note.id %}">{{ note.title }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </p>
+     {% endfor %}
+ </div>
+
+{% endblock %}

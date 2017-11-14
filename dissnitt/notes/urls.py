@@ -9,5 +9,6 @@ urlpatterns = [
     url(r'^new/$', views.new_note, name='new_note'),
     url(r'^note/(?P<pk>[0-9]+)/edit/$', views.edit_note, name='edit_note'),
     url(r'^note/(?P<pk>[0-9]+)/delete/$', views.delete_note, name='delete_note'),
-    url(r'^tag/(?P<pk>[0-9]+)/$', views.ByTagDetailView.as_view(), name='by_tag')
+    url(r'^tag/(?P<pk>[0-9]+)/$', views.ByTagDetailView.as_view(), name='by_tag'),
+    url(r'^tags/$', views.TagIndexView.as_view(), name='tags'),
 ]
