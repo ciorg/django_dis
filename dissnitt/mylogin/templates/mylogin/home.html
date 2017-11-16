@@ -1,4 +1,16 @@
 {% extends 'base.html' %}
-{% block page_header %}<h1>Welcome<h1>{% endblock %}
+{% block page_header %}<h1>Welcome</h1>{% endblock %}
 {% block content %}
+
+<div class="home">
+    <h2>Project Data</h2>
+    <p>Total Projects: {{ projects| length }} <br>
+       Finished Projects: {{ cprojects| length }} <br>
+       Percent of Projects Completed: {{ cperc }} %</p>
+
+    <h2>Notes and Tags Data</h2>
+    <p>Number of Notes: {{ notes| length }} <br>
+       Number of Tags: {{ tags| length }}</p>
+</div>
+
 {% endblock %}
