@@ -1,5 +1,5 @@
 # django_dis
-This is my process to learn django
+This is my project to learn django and hopefully create something useful for me
 
 Apps:
   Project Tracking
