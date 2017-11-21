@@ -25,7 +25,7 @@
     <p style="text-align: center;">Created: {{ note.created_date|date:"M d, Y" }}</p>
     <div class="dp_note_details">
         <p>
-            {{ note.body }}
+            {{ note.body| urlize | linebreaks }}
         </p>
         <div class="detail_tags">
             {% for tag in note.tags.all|sort_by_name %}

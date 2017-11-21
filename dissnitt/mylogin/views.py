@@ -9,7 +9,7 @@ from todo.models import Project
 def home(request):
     projects = Project.objects.all()
     cprojects = projects.filter(completed=True)
-    cperc = round(float(len(cprojects))/float(len(projects)), 2)
+    cperc = round((float(len(cprojects))/float(len(projects)))*100, 2)
     notes = Note.objects.all()
     tags = Tag.objects.all()
 
