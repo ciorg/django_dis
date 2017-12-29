@@ -3,18 +3,23 @@
 {% block head %}
     <title>Crypto | Dissnitt</title>
     <link href="http://cdn.pydata.org/bokeh/release/bokeh-0.12.13.min.css" rel="stylesheet" type="text/css">
-    <link href="http://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.13.min.css" rel="stylesheet" type="text/css">
     <link href="http://cdn.pydata.org/bokeh/release/bokeh-tables-0.12.13.min.css" rel="stylesheet" type="text/css">
     <script src="http://cdn.pydata.org/bokeh/release/bokeh-0.12.13.min.js"></script>
-    <script src="http://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.13.min.js"></script>
     <script src="http://cdn.pydata.org/bokeh/release/bokeh-tables-0.12.13.min.js"></script>
 {% endblock %}
 {% block page_header %}
     <h1>Bitcoin Price by Exchange </h1>
 {% endblock %}
 {% block content %}
+    <div id="bokeh_btc">
     {{ div|safe }}
     <script src="http://cdn.pydata.org/bokeh/release/bokeh-0.12.13.min.js"></script>
     <script src="http://cdn.pydata.org/bokeh/release/bokeh-tables-0.12.13.min.js"></script>
     {{ script|safe}}
+        <script type="text/javascript">
+            setTimeout( function() {
+                location.reload(forceGet=true);
+                }, 300000);
+        </script>
+    </div>
 {% endblock %}

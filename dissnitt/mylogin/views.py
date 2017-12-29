@@ -7,11 +7,18 @@ from todo.models import Project
 
 @login_required(login_url='/mylogin/login/')
 def home(request):
-    projects = Project.objects.all()
-    cprojects = projects.filter(completed=True)
-    cperc = round((float(len(cprojects))/float(len(projects)))*100, 2)
-    notes = Note.objects.all()
-    tags = Tag.objects.all()
+    user = request.user
+    projects = Project.objects.filter(owner__pk=user.pk)
+    cprojects = projects.filter(owner__pk=user.pk).filter(completed=True)
+
+    try:
+        cperc = round((float(len(cprojects))/float(len(projects)))*100, 2)
+
+    except ZeroDivisionError:
+        cperc = 0.00
+
+    notes = Note.objects.filter(owner__pk=user.pk)
+    tags = Tag.objects.filter(owner__pk=user.pk)
 
     context = {
         'projects':projects,

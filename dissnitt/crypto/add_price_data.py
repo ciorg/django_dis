@@ -66,7 +66,7 @@ class BitCoinPrice(object):
         c.execute('INSERT INTO crypto_bitcoin VALUES(?, ?, ?, ?)', data)
         conn.commit()
         conn.close()
-        print("added more data: {}".format(datetime.strftime(datetime.now(), "%m/%d/%Y T%H:%M")))
+        # print("added more data: {}".format(datetime.strftime(datetime.now(), "%m/%d/%Y T%H:%M")))
 
     def db_check(self):
         search = '''SELECT * FROM crypto_bitcoin'''

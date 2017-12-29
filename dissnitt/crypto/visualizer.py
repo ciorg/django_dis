@@ -22,7 +22,7 @@ class Bitcoin(object):
         return data
 
     def get_data(self):
-        search = "SELECT * FROM {}".format(self.table)
+        search = "SELECT * FROM {} where ptime > datetime('now', '-24 hours', '-5 minutes')".format(self.table)
         return self.db_search(search)
 
     def graph_data(self):
@@ -88,10 +88,8 @@ class Bitcoin(object):
         pd.line(x='time', y='profit', source=p_source, line_width=2, line_dash='dashed', line_color="black")
         pd.triangle(x='time', y='profit', source=p_source, size=10, fill_color='color')
         pd.add_tools(hover_p)
-        # show((column(p, pd)))
         script, div = components(column(pd, p))
         return script, div
 
 if __name__ == "__main__":
-    # Bitcoin().graph_data()
     pass
