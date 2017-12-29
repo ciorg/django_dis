@@ -5,5 +5,6 @@ from . import views
 app_name = 'crypto'
 
 urlpatterns = [
-    url('', views.index, name='index'),
+    url(r'^index', views.index, name='index'),
+    url(r'^btc', views.btc, name='btc')
 ]

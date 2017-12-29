@@ -2,11 +2,13 @@
 {% load staticfiles %}
 {% block head %}
     <title>Crypto | Dissnitt</title>
+    <link rel="stylesheet" href="{% static 'crypto/css/crypto.css' %}">
 {% endblock %}
 {% block page_header %}
     <h1>Crypto Stuff</h1>
 {% endblock %}
 {% block content %}
-    <h1>Here is a new webpage</h1>
-    <p>Yes indeed!!</p>
+<div class="crypto_index">
+    <a href="{% url 'crypto:btc' %}">Bitcoin Price by Exchanges</a>
+</div>
 {% endblock %}
