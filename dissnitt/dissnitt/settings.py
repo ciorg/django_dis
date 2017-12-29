@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'mylogin.apps.MyloginConfig',
     'todo.apps.TodoConfig',
     'notes.apps.NotesConfig',
+    'crypto.apps.CryptoConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

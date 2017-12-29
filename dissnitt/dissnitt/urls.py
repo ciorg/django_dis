@@ -22,5 +22,6 @@ urlpatterns = [
     url(r'^mylogin/', include('mylogin.urls')),
     url(r'^todo/', include('todo.urls')),
     url(r'^notes/', include('notes.urls')),
+    url(r'^crypto/', include('crypto.urls')),
     url(r'^$', views.home, name="home")
 ]

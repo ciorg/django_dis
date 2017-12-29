@@ -1,0 +1,8 @@
+div.crypto_index a {
+                     text-decoration: none;
+                     color: #8da4bf;
+                     font-size:1.2em;}
+
+div.crypto_index { margin: auto;
+                   width: 80%;
+                   padding-top: 1%;}
