@@ -42,7 +42,7 @@ class Bitcoin(object):
 
             cb_source['x'].append(t)
             cb_source['y'].append(cb_p)
-            cb_source['ex'].append("Conbase")
+            cb_source['ex'].append("Coinbase")
             cb_source['diff'].append((cb_p - gem_p))
 
             fees = (gem_p * 0.0025) + (cb_p * .0149)

@@ -7,20 +7,24 @@ from exchanges import Gemini, Coinbase
 
 class BitCoinPrice(object):
     def __init__(self):
-        self.prices = [0, 0]
-        self.exchanges = ["cb", "gem"]
+        self.prices = [0, 0, 0]
+        self.exchanges = ["cb", "gem", "kr"]
 
     def get_price(self, exchange, coin):
         p_dict = {"cb": "Coinbase(\"{}\").get_price()",
-                  "gem": "Gemini(\"{}\").get_price()"}
+                  "gem": "Gemini(\"{}\").get_price()",
+                  "kr": "Kraken(\"{}\").get_price()"}
 
         try:
             call = eval(p_dict.get(exchange).format(coin))
             if exchange is "cb":
                 self.prices[1] = call
 
-            else:
+            elif exchange is "gem":
                 self.prices[0] = call
+
+            else:
+                self.prices[2] = call
 
         except Exception as e:
             self.prices.append(0)
