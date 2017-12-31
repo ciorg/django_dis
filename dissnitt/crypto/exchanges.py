@@ -65,8 +65,9 @@ class Kraken(Exchange):
         pair = {"pair": cf}
         data = requests.get(self.url, params=pair)
         jdata = json.loads(data.text)
-        return jdata.get('result').get(ccall).get('c')[0]
+        return float(jdata.get('result').get(ccall).get('c')[0])
 
 
 if __name__ == "__main__":
-   pass
+   k = Kraken("btc")
+   print(k.get_price())

@@ -2,7 +2,7 @@ import threading
 import sqlite3
 from datetime import datetime
 from time import sleep
-from exchanges import Gemini, Coinbase
+from exchanges import Gemini, Coinbase, Kraken
 
 
 class BitCoinPrice(object):
@@ -17,16 +17,18 @@ class BitCoinPrice(object):
 
         try:
             call = eval(p_dict.get(exchange).format(coin))
-            if exchange is "cb":
-                self.prices[1] = call
 
-            elif exchange is "gem":
+            if exchange is "gem":
                 self.prices[0] = call
+
+            elif exchange is "cb":
+                self.prices[1] = call
 
             else:
                 self.prices[2] = call
 
         except Exception as e:
+            print(e)
             self.prices.append(0)
 
     def threaded_call(self):
@@ -61,16 +63,13 @@ class BitCoinPrice(object):
         except IndexError:
             lid = 0
 
-        if self.prices[0] == 0 or self.prices[1] == 0:
-            self.prices = [0, 0]
-
-        data = [lid+1, datetime.now(), self.prices[1], self.prices[0]]
+        data = [lid+1, datetime.now(), self.prices[0], self.prices[1], self.prices[2]]
         conn = sqlite3.connect("../db.sqlite3")
         c = conn.cursor()
-        c.execute('INSERT INTO crypto_bitcoin VALUES(?, ?, ?, ?)', data)
+        c.execute('INSERT INTO crypto_bitcoin VALUES(?, ?, ?, ?, ?)', data)
         conn.commit()
         conn.close()
-        # print("added more data: {}".format(datetime.strftime(datetime.now(), "%m/%d/%Y T%H:%M")))
+        print("added more data: {}, {}, {}, {}, {}".format(*data))
 
     def db_check(self):
         search = '''SELECT * FROM crypto_bitcoin'''
@@ -84,5 +83,4 @@ if __name__ == "__main__":
         p = BitCoinPrice()
         p.threaded_call()
         p.add_to_db()
-        # p.db_check()
         sleep(60)
