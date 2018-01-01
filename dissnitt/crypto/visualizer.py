@@ -34,9 +34,9 @@ class Bitcoin(object):
 
         for p in btc:
             t = datetime.strptime(p[1], "%Y-%m-%d %H:%M:%S.%f")
-            gem_p = p[2]
-            cb_p = p[3]
-            kr_p = p[4]
+            gem_p, gem_np = p[2], p[2]+(p[2]*0.0025)
+            cb_p, cb_np = p[3], p[3]+(p[3]*0.0149)
+            kr_p, kr_np = p[4], p[4]+(p[4]*0.0026)
 
             gem_source['x'].append(t)
             gem_source['y'].append(gem_p)
@@ -50,20 +50,20 @@ class Bitcoin(object):
             kr_source['y'].append(kr_p)
             kr_source['ex'].append("Kraken")
 
-            pdata = [(gem_p, 0.0025, "GEM"),
-                     (cb_p, 0.0149, "CB"),
-                     (kr_p, 0.0026, "KR")]
+            pdata = [(gem_p, gem_np, 0.0025, "GEM"),
+                     (cb_p, cb_np, 0.0149, "CB"),
+                     (kr_p, kr_np, 0.0026, "KR")]
 
-            pdata.sort(key=lambda x: x[0])
+            pdata.sort(key=lambda x: x[1])
 
-            profit = (pdata[-1][0] - pdata[0][0]) - ((pdata[-1][0] * pdata[-1][1]) + (pdata[0][0] * pdata[0][1]))
+            profit = (pdata[-1][0] - pdata[0][0]) - ((pdata[-1][0] * pdata[-1][2]) + (pdata[0][0] * pdata[0][2]))
             if profit > 0:
                 color = "green"
 
             else:
                 color = "red"
 
-            dir = "{}->{}".format(pdata[0][2], pdata[-1][2])
+            dir = "{}->{}".format(pdata[0][3], pdata[-1][3])
 
             p_source['time'].append(t)
             p_source['profit'].append(profit)
