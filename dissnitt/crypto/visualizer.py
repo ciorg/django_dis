@@ -23,7 +23,8 @@ class Bitcoin(object):
         return data
 
     def get_data(self):
-        search = "SELECT * FROM {} where ptime > datetime('now', '-31 hours', '-5 minutes')".format(self.table)
+        # search = "SELECT * FROM {} where ptime > datetime('now', '-31 hours', '-5 minutes')".format(self.table)
+        search = "SELECT * FROM {} order by id desc limit 60".format(self.table)
         return self.db_search(search)
 
     def safety_check(self, mode, p):
@@ -110,7 +111,7 @@ class Bitcoin(object):
         hover = HoverTool(
             tooltips=[("price", "$y{$0,0.00}"),
                       ("Exchange", "@ex"),
-                      ("Time", "@time{%m-%d %H:%M}")],
+                      ("Time", "@time{%m/%d %H:%M}")],
 
             formatters={"y": 'printf',
                         "time": 'datetime'}
@@ -118,7 +119,7 @@ class Bitcoin(object):
 
         hover_p = HoverTool(tooltips=[("profit", "@profit{$0,0.00}"),
                                       ("Direction", "@dir"),
-                                      ("Time", "@time{%m-%d %H:%M}")],
+                                      ("Time", "@time{%m/%d %H:%M}")],
 
                             formatters= {"time": "datetime"},
 
