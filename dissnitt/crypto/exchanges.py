@@ -9,11 +9,12 @@ class Exchange(object):
 
     def coin_format(self):
         position_dict = {"cb": 0,
-                         "gem": 1}
+                         "gem": 1,
+                         "kr": 2}
 
-        coin_dict = {'btc': ["BTC", "btcusd"],
-                     'eth': ["ETH", "ethusd"],
-                     'ltc': ["LTC"]}
+        coin_dict = {'btc': ["BTC", "btcusd", "XBTUSD"],
+                     'eth': ["ETH", "ethusd", "ETHUSD"],
+                     'ltc': ["LTC", "", "LTCUSD"]}
 
         return coin_dict.get(self.coin)[position_dict.get(self.exchange)]
 
@@ -46,5 +47,27 @@ class Gemini(Exchange):
         jdata = json.loads(ticker_data.text)
         return float(jdata.get("ask"))
 
+
+class Kraken(Exchange):
+
+    def __init__(self, coin):
+        Exchange.__init__(self, coin)
+        self.url="https://api.kraken.com/0/public/Ticker?"
+        self.exchange = "kr"
+
+    def get_price(self):
+        cf = self.coin_format()
+        ccall = list(cf)
+        ccall.insert(0, "X")
+        ccall.insert(-3, "Z")
+        ccall = "".join(ccall)
+
+        pair = {"pair": cf}
+        data = requests.get(self.url, params=pair)
+        jdata = json.loads(data.text)
+        return float(jdata.get('result').get(ccall).get('c')[0])
+
+
 if __name__ == "__main__":
-    pass
+   k = Kraken("btc")
+   print(k.get_price())
