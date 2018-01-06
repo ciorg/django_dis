@@ -1,5 +1,6 @@
 import sqlite3
 from datetime import datetime
+from collections import namedtuple
 
 from bokeh.plotting import figure, output_file, show, ColumnDataSource
 from bokeh.layouts import row, column
@@ -25,68 +26,111 @@ class Bitcoin(object):
         search = "SELECT * FROM {} where ptime > datetime('now', '-31 hours', '-5 minutes')".format(self.table)
         return self.db_search(search)
 
+    def safety_check(self, mode, p):
+        if  p < mode*0.5:
+            return mode
+        else:
+            return p
+
+    def get_profit(self, prices):
+
+        high = -10000
+        hp_data = tuple()
+        for x in range(len(prices), 0, -1):
+            if x >= 2:
+                p1, f1 = prices[x - 1].p, prices[x - 1].f
+
+                for y in range(x - 1, 0, -1):
+                    p2, f2 = prices[y - 1].p, prices[y - 1].f
+
+                    profit = abs(p1 - p2) - ((p1 * f1) + (p2 * f2))
+
+                    if profit > high:
+                        high = profit
+                        dir = [prices[x - 1], prices[y - 1]]
+                        dir.sort(reverse=True, key=lambda x: x.p)
+                        hp_data = (profit, "{}->{}".format(dir[0].ex, dir[1].ex))
+
+            else:
+                pass
+
+        return hp_data
+
     def graph_data(self):
         btc = self.get_data()
-        gem_source = dict(x=[], y=[], ex=[])
-        cb_source = dict(x=[], y=[], ex=[])
-        kr_source = dict(x=[], y=[], ex=[])
-        p_source = dict(time=[], profit=[], dir=[], color=[])
+        gem_source = dict(y=[], ex=[])
+        cb_source = dict(y=[], ex=[])
+        kr_source = dict(y=[], ex=[])
+        p_source = dict(profit=[], dir=[], color=[])
+        time = []
 
         for p in btc:
             t = datetime.strptime(p[1], "%Y-%m-%d %H:%M:%S.%f")
-            gem_p, gem_np = p[2], p[2]+(p[2]*0.0025)
-            cb_p, cb_np = p[3], p[3]+(p[3]*0.0149)
-            kr_p, kr_np = p[4], p[4]+(p[4]*0.0026)
+            time.append(t)
 
-            gem_source['x'].append(t)
+            gem_p, cb_p, kr_p = p[2], p[3], p[4]
+
+            med_v = [gem_p, cb_p, kr_p]
+            med_v.sort()
+            mode = med_v[1]
+
+            gem_p = self.safety_check(mode, gem_p)
+            cb_p = self.safety_check(mode, cb_p)
+            kr_p = self.safety_check(mode, kr_p)
+
             gem_source['y'].append(gem_p)
             gem_source['ex'].append("Gemini")
 
-            cb_source['x'].append(t)
             cb_source['y'].append(cb_p)
             cb_source['ex'].append("Coinbase")
 
-            kr_source['x'].append(t)
             kr_source['y'].append(kr_p)
             kr_source['ex'].append("Kraken")
 
-            pdata = [(gem_p, gem_np, 0.0025, "GEM"),
-                     (cb_p, cb_np, 0.0149, "CB"),
-                     (kr_p, kr_np, 0.0026, "KR")]
+            pdata = namedtuple('pdata', 'ex, p, f')
 
-            pdata.sort(key=lambda x: x[1])
+            prices = (pdata("cb", cb_p, 0.0149),
+                      pdata("gem", gem_p, 0.0025),
+                      pdata("kr", kr_p, 0.0026))
 
-            profit = (pdata[-1][0] - pdata[0][0]) - ((pdata[-1][0] * pdata[-1][2]) + (pdata[0][0] * pdata[0][2]))
+            profit, dir = self.get_profit(prices)
+
+            p_source['profit'].append(profit)
+            p_source['dir'].append(dir)
+
             if profit > 0:
                 color = "green"
-
             else:
                 color = "red"
 
-            dir = "{}->{}".format(pdata[0][3], pdata[-1][3])
-
-            p_source['time'].append(t)
-            p_source['profit'].append(profit)
-            p_source['dir'].append(dir)
             p_source['color'].append(color)
 
         # output_file("test.html")
 
         hover = HoverTool(
             tooltips=[("price", "$y{$0,0.00}"),
-                      ("Exchange", "@ex")],
-            formatters={"y": 'printf'}
+                      ("Exchange", "@ex"),
+                      ("Time", "@time{%m-%d %H:%M}")],
+
+            formatters={"y": 'printf',
+                        "time": 'datetime'}
         )
 
         hover_p = HoverTool(tooltips=[("profit", "@profit{$0,0.00}"),
-                                      ("Direction", "@dir")],
+                                      ("Direction", "@dir"),
+                                      ("Time", "@time{%m-%d %H:%M}")],
+
+                            formatters= {"time": "datetime"},
+
                             mode="vline"
                             )
 
+        gem_source['time'] = cb_source['time'] = kr_source['time'] = p_source['time'] = time
+
         p = figure(plot_width=1300, plot_height=500, x_axis_type="datetime", title="Bitcoin Price by Exchange")
-        p.line('x', 'y', source=gem_source, line_width=2, legend="Gemini", color="blue")
-        p.line('x', 'y', source=cb_source, line_width=2, legend="Coinbase", color="orange")
-        p.line('x', 'y', source=kr_source, line_width=2, legend="Kraken", color="green")
+        p.line('time', 'y', source=gem_source, line_width=2, legend="Gemini", color="blue")
+        p.line('time', 'y', source=cb_source, line_width=2, legend="Coinbase", color="orange")
+        p.line('time', 'y', source=kr_source, line_width=2, legend="Kraken", color="green")
         p.legend.click_policy = "hide"
         p.legend.location = "bottom_left"
         p.add_tools(hover)
