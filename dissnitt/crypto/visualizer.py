@@ -22,14 +22,15 @@ class Bitcoin(object):
         conn.close()
         return data
 
-    def get_data(self):
+    def get_data(self, tf):
         # search = "SELECT * FROM {} where ptime > datetime('now', '-31 hours', '-5 minutes')".format(self.table)
-        search = "SELECT * FROM {} order by id desc limit 60".format(self.table)
+        search = "SELECT * FROM {} order by id desc limit {}".format(self.table, tf)
         return self.db_search(search)
 
     def safety_check(self, mode, p):
         if  p < mode*0.5:
             return mode
+
         else:
             return p
 
@@ -57,8 +58,8 @@ class Bitcoin(object):
 
         return hp_data
 
-    def graph_data(self):
-        btc = self.get_data()
+    def graph_data(self, tf=60):
+        btc = self.get_data(tf)
         gem_source = dict(y=[], ex=[])
         cb_source = dict(y=[], ex=[])
         kr_source = dict(y=[], ex=[])

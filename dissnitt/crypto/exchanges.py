@@ -2,72 +2,79 @@ import requests
 import json
 
 
-class Exchange(object):
+class Exchanges(object):
     def __init__(self, coin):
         self.coin = coin
-        self.exchange = ""
 
-    def coin_format(self):
-        position_dict = {"cb": 0,
-                         "gem": 1,
-                         "kr": 2}
+    def binance(self):
+        coins_dict = {"btc": "BTCUSDT"}
+        url = "https://api.binance.com/api/v3/ticker/price?"
 
-        coin_dict = {'btc': ["BTC", "btcusd", "XBTUSD"],
-                     'eth': ["ETH", "ethusd", "ETHUSD"],
-                     'ltc': ["LTC", "", "LTCUSD"]}
+        try:
+            cf = coins_dict[self.coin]
+            pair = {"symbol": cf}
+            data = requests.get(url, params=pair)
+            jdata = json.loads(data.text)
+            return float(jdata['price'])
 
-        return coin_dict.get(self.coin)[position_dict.get(self.exchange)]
+        except KeyError:
+            print("No coin on this exchange")
 
+    def coinbase(self):
+        coins_dict = {'btc': 'BTC',
+                      'eth': 'ETH',
+                      'ltc': 'LTC'}
 
-class Coinbase(Exchange):
-    def __init__(self, coin):
-        Exchange.__init__(self, coin)
-        self.url = "https://api.coinbase.com/v2/prices/{}-USD/spot"
-        self.exchange = "cb"
+        url = "https://api.coinbase.com/v2/prices/{}-USD/spot"
 
-    def get_price(self):
-        fcoin = self.coin_format()
-        url = self.url.format(fcoin)
-        bit_r = requests.get(url)
-        bit_r_json = json.loads(bit_r.text)
-        return float(bit_r_json.get('data').get("amount"))
+        try:
+            cf = coins_dict[self.coin]
+            url = url.format(cf)
+            bit_r = requests.get(url)
+            bit_r_json = json.loads(bit_r.text)
+            return float(bit_r_json.get('data').get("amount"))
 
+        except KeyError:
+            print("No coin on this exchange")
 
-class Gemini(Exchange):
+    def gemini(self):
+        coins_dict = {'btc': 'btcusd',
+                      'eth': 'ethusd'}
 
-    def __init__(self, coin):
-        Exchange.__init__(self, coin)
-        self.url = "https://api.gemini.com/v1/pubticker/{}"
-        self.exchange = "gem"
+        url = "https://api.gemini.com/v1/pubticker/{}"
+        try:
+            cf = coins_dict[self.coin]
+            url = url.format(cf)
+            ticker_data = requests.get(url)
+            jdata = json.loads(ticker_data.text)
+            return float(jdata.get("ask"))
 
-    def get_price(self):
-        fcoin = self.coin_format()
-        url = self.url.format(fcoin)
-        ticker_data = requests.get(url)
-        jdata = json.loads(ticker_data.text)
-        return float(jdata.get("ask"))
+        except KeyError:
+            print("No coin on this exchange")
 
+    def kraken(self):
+        coins_dict = {'btc': 'XBTUSD',
+                      'eth': 'ETHUSD',
+                      'ltc': 'LTCUSD'}
 
-class Kraken(Exchange):
+        url = "https://api.kraken.com/0/public/Ticker?"
 
-    def __init__(self, coin):
-        Exchange.__init__(self, coin)
-        self.url="https://api.kraken.com/0/public/Ticker?"
-        self.exchange = "kr"
+        try:
+            cf = coins_dict[self.coin]
+            ccall = list(cf)
+            ccall.insert(0, "X")
+            ccall.insert(-3, "Z")
+            ccall = "".join(ccall)
 
-    def get_price(self):
-        cf = self.coin_format()
-        ccall = list(cf)
-        ccall.insert(0, "X")
-        ccall.insert(-3, "Z")
-        ccall = "".join(ccall)
+            pair = {"pair": cf}
+            data = requests.get(url, params=pair)
+            jdata = json.loads(data.text)
+            return float(jdata.get('result').get(ccall).get('c')[0])
 
-        pair = {"pair": cf}
-        data = requests.get(self.url, params=pair)
-        jdata = json.loads(data.text)
-        return float(jdata.get('result').get(ccall).get('c')[0])
+        except KeyError:
+            print("No coin on this exchange")
 
 
 if __name__ == "__main__":
-   k = Kraken("btc")
-   print(k.get_price())
+    c = Exchanges("btc")
+    print(c.kraken())

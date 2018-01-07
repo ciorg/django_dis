@@ -2,6 +2,7 @@
 {% load staticfiles %}
 {% block head %}
     <title>Crypto | Dissnitt</title>
+     <link rel="stylesheet" href="{% static 'crypto/css/crypto.css' %}">
     <link href="http://cdn.pydata.org/bokeh/release/bokeh-0.12.13.min.css" rel="stylesheet" type="text/css">
     <link href="http://cdn.pydata.org/bokeh/release/bokeh-tables-0.12.13.min.css" rel="stylesheet" type="text/css">
     <script src="http://cdn.pydata.org/bokeh/release/bokeh-0.12.13.min.js"></script>
@@ -11,15 +12,28 @@
     <h1>Bitcoin Price by Exchange </h1>
 {% endblock %}
 {% block content %}
+    <div class="tf_div">
+         <form method="POST">
+             {% csrf_token %}
+            <p>
+                {{ form.non_field_errors }}
+                {{ form.title.errors }}
+            </p>
+            <p>
+                {{ form.time_frame }}
+            </p>
+             <button class="tfbutton" type="submit" >Set Look Back Period in Minutes</button>
+         </form>
+    </div>
     <div id="bokeh_btc">
-    {{ div|safe }}
-    <script src="http://cdn.pydata.org/bokeh/release/bokeh-0.12.13.min.js"></script>
-    <script src="http://cdn.pydata.org/bokeh/release/bokeh-tables-0.12.13.min.js"></script>
-    {{ script|safe}}
-        <script type="text/javascript">
-            setTimeout( function() {
-                location.reload(forceGet=true);
-                }, 300000);
-        </script>
+        {{ div|safe }}
+        <script src="http://cdn.pydata.org/bokeh/release/bokeh-0.12.13.min.js"></script>
+        <script src="http://cdn.pydata.org/bokeh/release/bokeh-tables-0.12.13.min.js"></script>
+        {{ script|safe}}
+            <script type="text/javascript">
+                setTimeout( function() {
+                    location.reload(forceGet=true);
+                    }, 300000);
+            </script>
     </div>
 {% endblock %}

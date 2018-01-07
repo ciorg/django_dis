@@ -6,5 +6,5 @@ app_name = 'crypto'
 
 urlpatterns = [
     url(r'^index', views.index, name='index'),
-    url(r'^btc', views.btc, name='btc')
+    url(r'^btc', views.btc, name='btc'),
 ]

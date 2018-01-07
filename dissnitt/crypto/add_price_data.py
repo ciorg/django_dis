@@ -2,34 +2,25 @@ import threading
 import sqlite3
 from datetime import datetime
 from time import sleep
-from exchanges import Gemini, Coinbase, Kraken
+from exchanges import Exchanges
 
 
 class BitCoinPrice(object):
     def __init__(self):
-        self.prices = [0, 0, 0]
-        self.exchanges = ["cb", "gem", "kr"]
+        self.exchanges = ('cb', 'gem', 'kr', 'bi')
+        self.prices_dict = {}
 
     def get_price(self, exchange, coin):
-        p_dict = {"cb": "Coinbase(\"{}\").get_price()",
-                  "gem": "Gemini(\"{}\").get_price()",
-                  "kr": "Kraken(\"{}\").get_price()"}
+        p_dict = {'bi': 'Exchanges("{}").binance()',
+                  'cb': 'Exchanges("{}").coinbase()',
+                  'gem': 'Exchanges("{}").gemini()',
+                  'kr': 'Exchanges("{}").kraken()'
+                  }
 
-        try:
-            call = eval(p_dict.get(exchange).format(coin))
-
-            if exchange is "gem":
-                self.prices[0] = call
-
-            elif exchange is "cb":
-                self.prices[1] = call
-
-            else:
-                self.prices[2] = call
-
-        except Exception as e:
-            print(e)
-            self.prices.append(0)
+        line = p_dict.get(exchange).format(coin)
+        print(line)
+        call = eval(p_dict.get(exchange).format(coin))
+        self.prices_dict[exchange] = call
 
     def threaded_call(self):
         threads = []
@@ -57,6 +48,7 @@ class BitCoinPrice(object):
     def add_to_db(self):
         id_search = '''SELECT id FROM crypto_bitcoin order by id desc limit 1;'''
         last = self.db_search(id_search)
+
         try:
             lid = last[0][0]
 
@@ -79,8 +71,10 @@ class BitCoinPrice(object):
 
 
 if __name__ == "__main__":
-    while True:
-        p = BitCoinPrice()
-        p.threaded_call()
-        p.add_to_db()
-        sleep(60)
+    # while True:
+    p = BitCoinPrice()
+    p.threaded_call()
+    # p.get_price('bi', 'btc')
+    print(p.prices_dict)
+        # p.add_to_db()
+        # sleep(60)
