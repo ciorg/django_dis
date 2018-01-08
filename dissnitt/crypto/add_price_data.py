@@ -2,34 +2,26 @@ import threading
 import sqlite3
 from datetime import datetime
 from time import sleep
-from exchanges import Gemini, Coinbase, Kraken
+from exchanges import Exchanges
 
 
 class BitCoinPrice(object):
     def __init__(self):
-        self.prices = [0, 0, 0]
-        self.exchanges = ["cb", "gem", "kr"]
+        self.exchanges = ('cb', 'gem', 'kr', 'bi', 'bf', 'bs', 'gd')
+        self.prices_dict = {}
 
     def get_price(self, exchange, coin):
-        p_dict = {"cb": "Coinbase(\"{}\").get_price()",
-                  "gem": "Gemini(\"{}\").get_price()",
-                  "kr": "Kraken(\"{}\").get_price()"}
+        p_dict = {'bi': 'Exchanges("{}").binance()',
+                  'bf': 'Exchanges("{}").bitfinex()',
+                  'bs': 'Exchanges("{}").bitstamp()',
+                  'cb': 'Exchanges("{}").coinbase()',
+                  'gd': 'Exchanges("{}").gdax()',
+                  'gem': 'Exchanges("{}").gemini()',
+                  'kr': 'Exchanges("{}").kraken()',
+                  }
 
-        try:
-            call = eval(p_dict.get(exchange).format(coin))
-
-            if exchange is "gem":
-                self.prices[0] = call
-
-            elif exchange is "cb":
-                self.prices[1] = call
-
-            else:
-                self.prices[2] = call
-
-        except Exception as e:
-            print(e)
-            self.prices.append(0)
+        call = eval(p_dict.get(exchange).format(coin))
+        self.prices_dict[exchange] = call
 
     def threaded_call(self):
         threads = []
@@ -57,19 +49,23 @@ class BitCoinPrice(object):
     def add_to_db(self):
         id_search = '''SELECT id FROM crypto_bitcoin order by id desc limit 1;'''
         last = self.db_search(id_search)
+
         try:
             lid = last[0][0]
 
         except IndexError:
             lid = 0
 
-        data = [lid+1, datetime.now(), self.prices[0], self.prices[1], self.prices[2]]
+        data = [lid+1, datetime.now(), self.prices_dict.get('gem'), self.prices_dict.get('cb'),
+                self.prices_dict.get('kr'), self.prices_dict.get('bi'), self.prices_dict.get('bf'),
+                self.prices_dict.get('bs'), self.prices_dict.get('gd')]
+
         conn = sqlite3.connect("../db.sqlite3")
         c = conn.cursor()
-        c.execute('INSERT INTO crypto_bitcoin VALUES(?, ?, ?, ?, ?)', data)
+        c.execute('INSERT INTO crypto_bitcoin VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)', data)
         conn.commit()
         conn.close()
-        print("added more data: {}, {}, {}, {}, {}".format(*data))
+        print("added more data: {}, {}, {}, {}, {}, {}, {}, {}, {}".format(*data))
 
     def db_check(self):
         search = '''SELECT * FROM crypto_bitcoin'''
@@ -82,5 +78,7 @@ if __name__ == "__main__":
     while True:
         p = BitCoinPrice()
         p.threaded_call()
+        # p.get_price('bi', 'btc')
+        # print(p.prices_dict)
         p.add_to_db()
         sleep(60)

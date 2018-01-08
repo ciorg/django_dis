@@ -22,14 +22,15 @@ class Bitcoin(object):
         conn.close()
         return data
 
-    def get_data(self):
+    def get_data(self, tf):
         # search = "SELECT * FROM {} where ptime > datetime('now', '-31 hours', '-5 minutes')".format(self.table)
-        search = "SELECT * FROM {} order by id desc limit 60".format(self.table)
+        search = "SELECT * FROM {} order by id desc limit {}".format(self.table, tf)
         return self.db_search(search)
 
     def safety_check(self, mode, p):
         if  p < mode*0.5:
             return mode
+
         else:
             return p
 
@@ -57,11 +58,11 @@ class Bitcoin(object):
 
         return hp_data
 
-    def graph_data(self):
-        btc = self.get_data()
-        gem_source = dict(y=[], ex=[])
-        cb_source = dict(y=[], ex=[])
-        kr_source = dict(y=[], ex=[])
+    def graph_data(self, tf=60):
+        btc = self.get_data(tf)
+        gem_source, cb_source, kr_source = dict(y=[], ex=[]),  dict(y=[], ex=[]), dict(y=[], ex=[])
+        bi_source, bf_source = dict(y=[], ex=[]), dict(y=[], ex=[])
+        gd_source, bs_source = dict(y=[], ex=[]), dict(y=[], ex=[])
         p_source = dict(profit=[], dir=[], color=[])
         time = []
 
@@ -69,15 +70,19 @@ class Bitcoin(object):
             t = datetime.strptime(p[1], "%Y-%m-%d %H:%M:%S.%f")
             time.append(t)
 
-            gem_p, cb_p, kr_p = p[2], p[3], p[4]
+            gem_p, cb_p, kr_p, bi_p, bf_p, bs_p, gd_p = p[2], p[3], p[4], p[5], p[6], p[7], p[8]
 
-            med_v = [gem_p, cb_p, kr_p]
+            med_v = [gem_p, cb_p, kr_p, bi_p, bf_p, bs_p, gd_p]
             med_v.sort()
             mode = med_v[1]
 
             gem_p = self.safety_check(mode, gem_p)
             cb_p = self.safety_check(mode, cb_p)
             kr_p = self.safety_check(mode, kr_p)
+            bi_p = self.safety_check(mode, bi_p)
+            bf_p = self.safety_check(mode, bf_p)
+            bs_p = self.safety_check(mode, bs_p)
+            gd_p = self.safety_check(mode, gd_p)
 
             gem_source['y'].append(gem_p)
             gem_source['ex'].append("Gemini")
@@ -88,11 +93,27 @@ class Bitcoin(object):
             kr_source['y'].append(kr_p)
             kr_source['ex'].append("Kraken")
 
+            bi_source['y'].append(bi_p)
+            bi_source['ex'].append("Binance")
+
+            bf_source['y'].append(bf_p)
+            bf_source['ex'].append("Bitfinex")
+
+            bs_source['y'].append(bs_p)
+            bs_source['ex'].append("Bitstamp")
+
+            gd_source['y'].append(gd_p)
+            gd_source['ex'].append("GDAX")
+
             pdata = namedtuple('pdata', 'ex, p, f')
 
             prices = (pdata("cb", cb_p, 0.0149),
                       pdata("gem", gem_p, 0.0025),
-                      pdata("kr", kr_p, 0.0026))
+                      pdata("kr", kr_p, 0.0026),
+                      pdata('bi', bi_p, 0.001),
+                      pdata('bf', bf_p, 0.002),
+                      pdata('bs', bs_p, 0.0025),
+                      pdata('gd', gd_p, 0.0025))
 
             profit, dir = self.get_profit(prices)
 
@@ -126,12 +147,18 @@ class Bitcoin(object):
                             mode="vline"
                             )
 
-        gem_source['time'] = cb_source['time'] = kr_source['time'] = p_source['time'] = time
+        gem_source['time'] = cb_source['time'] = kr_source['time'] = p_source['time'] = bi_source['time'] = time
+        bf_source['time'] = bs_source['time'] = gd_source['time'] = time
 
         p = figure(plot_width=1300, plot_height=500, x_axis_type="datetime", title="Bitcoin Price by Exchange")
         p.line('time', 'y', source=gem_source, line_width=2, legend="Gemini", color="blue")
         p.line('time', 'y', source=cb_source, line_width=2, legend="Coinbase", color="orange")
         p.line('time', 'y', source=kr_source, line_width=2, legend="Kraken", color="green")
+        p.line('time', 'y', source=bi_source, line_width=2, legend="Binance", color="black")
+        p.line('time', 'y', source=bf_source, line_width=2, legend="Bitfinex", color="yellow")
+        p.line('time', 'y', source=bs_source, line_width=2, legend="Bitstamp", color="purple")
+        p.line('time', 'y', source=gd_source, line_width=2, legend="GDAX", color="red")
+
         p.legend.click_policy = "hide"
         p.legend.location = "bottom_left"
         p.add_tools(hover)
