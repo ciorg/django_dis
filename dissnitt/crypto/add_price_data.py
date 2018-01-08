@@ -7,18 +7,19 @@ from exchanges import Exchanges
 
 class BitCoinPrice(object):
     def __init__(self):
-        self.exchanges = ('cb', 'gem', 'kr', 'bi')
+        self.exchanges = ('cb', 'gem', 'kr', 'bi', 'bf', 'bs', 'gd')
         self.prices_dict = {}
 
     def get_price(self, exchange, coin):
         p_dict = {'bi': 'Exchanges("{}").binance()',
+                  'bf': 'Exchanges("{}").bitfinex()',
+                  'bs': 'Exchanges("{}").bitstamp()',
                   'cb': 'Exchanges("{}").coinbase()',
+                  'gd': 'Exchanges("{}").gdax()',
                   'gem': 'Exchanges("{}").gemini()',
-                  'kr': 'Exchanges("{}").kraken()'
+                  'kr': 'Exchanges("{}").kraken()',
                   }
 
-        line = p_dict.get(exchange).format(coin)
-        print(line)
         call = eval(p_dict.get(exchange).format(coin))
         self.prices_dict[exchange] = call
 
@@ -55,13 +56,16 @@ class BitCoinPrice(object):
         except IndexError:
             lid = 0
 
-        data = [lid+1, datetime.now(), self.prices[0], self.prices[1], self.prices[2]]
+        data = [lid+1, datetime.now(), self.prices_dict.get('gem'), self.prices_dict.get('cb'),
+                self.prices_dict.get('kr'), self.prices_dict.get('bi'), self.prices_dict.get('bf'),
+                self.prices_dict.get('bs'), self.prices_dict.get('gd')]
+
         conn = sqlite3.connect("../db.sqlite3")
         c = conn.cursor()
-        c.execute('INSERT INTO crypto_bitcoin VALUES(?, ?, ?, ?, ?)', data)
+        c.execute('INSERT INTO crypto_bitcoin VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)', data)
         conn.commit()
         conn.close()
-        print("added more data: {}, {}, {}, {}, {}".format(*data))
+        print("added more data: {}, {}, {}, {}, {}, {}, {}, {}, {}".format(*data))
 
     def db_check(self):
         search = '''SELECT * FROM crypto_bitcoin'''
@@ -71,10 +75,10 @@ class BitCoinPrice(object):
 
 
 if __name__ == "__main__":
-    # while True:
-    p = BitCoinPrice()
-    p.threaded_call()
-    # p.get_price('bi', 'btc')
-    print(p.prices_dict)
-        # p.add_to_db()
-        # sleep(60)
+    while True:
+        p = BitCoinPrice()
+        p.threaded_call()
+        # p.get_price('bi', 'btc')
+        # print(p.prices_dict)
+        p.add_to_db()
+        sleep(60)

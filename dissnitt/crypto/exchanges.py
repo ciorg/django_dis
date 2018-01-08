@@ -20,6 +20,34 @@ class Exchanges(object):
         except KeyError:
             print("No coin on this exchange")
 
+    def bitfinex(self):
+        coins_dict = {'btc': 'tBTCUSD'}
+        url = "https://api.bitfinex.com/v2/ticker/{}"
+
+        # [ BID, BID_SIZE, ASK, ASK_SIZE, DAILY_CHANGE, DAILY_CHANGE_PERC, LAST_PRICE, VOLUME, HIGH, LOW ]
+
+        try:
+            url = url.format(coins_dict.get(self.coin))
+            ticker_data = requests.get(url)
+            jdata = json.loads(ticker_data.text)
+            return float(jdata[6])
+
+        except:
+            print("No coin on this exchange")
+
+    def bitstamp(self):
+        coins_dict = {'btc': 'btcusd'}
+        url = 'https://www.bitstamp.net/api/v2/ticker/{}/'
+
+        try:
+            url = url.format(coins_dict[self.coin])
+            bit_r = requests.get(url)
+            bit_r_json = json.loads(bit_r.text)
+            return float(bit_r_json.get('last'))
+
+        except:
+            print("No coin on this exchange")
+
     def coinbase(self):
         coins_dict = {'btc': 'BTC',
                       'eth': 'ETH',
@@ -52,6 +80,20 @@ class Exchanges(object):
         except KeyError:
             print("No coin on this exchange")
 
+    def gdax(self):
+        coins_dict = {'btc': 'BTC-USD'}
+
+        url = 'https://api.gdax.com/products/{}/book'
+
+        try:
+            url = url.format(coins_dict[self.coin])
+            ticker_data = requests.get(url)
+            jdata = json.loads(ticker_data.text)
+            return float(jdata.get('bids')[0][0])
+
+        except KeyError:
+            print("No coin on this exchange")
+
     def kraken(self):
         coins_dict = {'btc': 'XBTUSD',
                       'eth': 'ETHUSD',
@@ -77,4 +119,4 @@ class Exchanges(object):
 
 if __name__ == "__main__":
     c = Exchanges("btc")
-    print(c.kraken())
+    print(c.bitstamp())
