@@ -30,9 +30,10 @@ class Bitcoin(object):
     def safety_check(self, mode, p):
         if  p < mode*0.5:
             return mode
-
+    
         else:
             return p
+
 
     def get_profit(self, prices):
 
@@ -42,20 +43,25 @@ class Bitcoin(object):
             if x >= 2:
                 p1, f1 = prices[x - 1].p, prices[x - 1].f
 
-                for y in range(x - 1, 0, -1):
-                    p2, f2 = prices[y - 1].p, prices[y - 1].f
+                if p1 == 0 or p1 is None:
+                    pass
 
-                    profit = abs(p1 - p2) - ((p1 * f1) + (p2 * f2))
+                else:
+                    for y in range(x - 1, 0, -1):
+                        p2, f2 = prices[y - 1].p, prices[y - 1].f
 
-                    if profit > high:
-                        high = profit
-                        dir = [prices[x - 1], prices[y - 1]]
-                        dir.sort(reverse=True, key=lambda x: x.p)
-                        hp_data = (profit, "{}->{}".format(dir[0].ex, dir[1].ex))
+                        profit = abs(p1 - p2) - ((p1 * f1) + (p2 * f2))
+
+                        if profit > high:
+                            high = profit
+                            dir = [prices[x - 1], prices[y - 1]]
+                            dir.sort(reverse=True, key=lambda x: x.p)
+                            hp_data = (profit, "{}->{}".format(dir[0].ex, dir[1].ex))
 
             else:
                 pass
 
+        print(hp_data)
         return hp_data
 
     def graph_data(self, tf=60):
@@ -71,6 +77,7 @@ class Bitcoin(object):
             time.append(t)
 
             gem_p, cb_p, kr_p, bi_p, bf_p, bs_p, gd_p = p[2], p[3], p[4], p[5], p[6], p[7], p[8]
+            print(gem_p, cb_p, kr_p, bi_p, bf_p, bs_p, gd_p )
 
             med_v = [gem_p, cb_p, kr_p, bi_p, bf_p, bs_p, gd_p]
             med_v.sort()
@@ -114,6 +121,8 @@ class Bitcoin(object):
                       pdata('bf', bf_p, 0.002),
                       pdata('bs', bs_p, 0.0025),
                       pdata('gd', gd_p, 0.0025))
+
+            print(prices)
 
             profit, dir = self.get_profit(prices)
 

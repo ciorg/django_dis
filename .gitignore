@@ -12,3 +12,4 @@ dissnitt/mylogin/migrations/
 dissnitt/notes/migrations/
 dissnitt/crypto/migrations/
 pac
+*.log
