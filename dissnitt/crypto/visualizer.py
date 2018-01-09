@@ -1,6 +1,7 @@
 import sqlite3
 from datetime import datetime
 from collections import namedtuple
+from .calcs import CalcClass
 
 from bokeh.plotting import figure, output_file, show, ColumnDataSource
 from bokeh.layouts import row, column
@@ -8,7 +9,7 @@ from bokeh.models import HoverTool
 from bokeh.embed import components
 
 
-class Bitcoin(object):
+class BitcoinClass(object):
 
     def __init__(self):
         self.db = "db.sqlite3"
@@ -33,36 +34,6 @@ class Bitcoin(object):
     
         else:
             return p
-
-
-    def get_profit(self, prices):
-
-        high = -10000
-        hp_data = tuple()
-        for x in range(len(prices), 0, -1):
-            if x >= 2:
-                p1, f1 = prices[x - 1].p, prices[x - 1].f
-
-                if p1 == 0 or p1 is None:
-                    pass
-
-                else:
-                    for y in range(x - 1, 0, -1):
-                        p2, f2 = prices[y - 1].p, prices[y - 1].f
-
-                        profit = abs(p1 - p2) - ((p1 * f1) + (p2 * f2))
-
-                        if profit > high:
-                            high = profit
-                            dir = [prices[x - 1], prices[y - 1]]
-                            dir.sort(reverse=True, key=lambda x: x.p)
-                            hp_data = (profit, "{}->{}".format(dir[0].ex, dir[1].ex))
-
-            else:
-                pass
-
-        print(hp_data)
-        return hp_data
 
     def graph_data(self, tf=60):
         btc = self.get_data(tf)
@@ -122,15 +93,14 @@ class Bitcoin(object):
                       pdata('bs', bs_p, 0.0025),
                       pdata('gd', gd_p, 0.0025))
 
-            print(prices)
-
-            profit, dir = self.get_profit(prices)
+            profit, dir = CalcClass().get_profit(prices)
 
             p_source['profit'].append(profit)
             p_source['dir'].append(dir)
 
             if profit > 0:
                 color = "green"
+
             else:
                 color = "red"
 

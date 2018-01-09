@@ -9,6 +9,10 @@
 {% endblock %}
 {% block content %}
 <div class="crypto_index">
+    <div class="bitp">
+        {{ profit }}<br>
+        {{ dir }}
+    </div>
     <a href="{% url 'crypto:btc' %}">Bitcoin Price by Exchanges</a>
 </div>
 {% endblock %}
