@@ -12,7 +12,7 @@
     <div class="bitp">
         <table>
             <tr>
-                <td>BitCoin/ USD</td>
+                <th class="static">BitCoin/ USD</th>
             </tr>
             <tr>
                 <td class="profit">$ {{ profit|floatformat:2 }}</td>
@@ -21,7 +21,7 @@
                 <td class="profit">{{ pp|floatformat:2 }} %</td>
             </tr>
             <tr>
-                <td>{{ dir }}</td>
+                <td class="static">{{ dir }}</td>
             </tr>
             <tr>
                 <td><a href="{% url 'crypto:btc' %}">View History</a></td>

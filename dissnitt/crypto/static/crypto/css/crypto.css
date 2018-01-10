@@ -1,6 +1,6 @@
 div.crypto_index a {
                      text-decoration: none;
-                     color: #8da4bf;
+                     color: #304c89;
                      font-size:1.2em;}
 
 div.crypto_index { margin: auto;
@@ -20,11 +20,16 @@ div.bitp {
     text-align: center;
     border-radius: 12px;
     -webkit-border-radius: 12px;
-    border: 1px solid black;
+    border: 3px solid #8da4bf;
+}
+
+.static {
+    color: #304c89;
+    font-size: 1.3em;
 }
 
 .profit {
-    background-color: green;
+    background-color: #488214;
     color: white;
     border-radius: 12px;
     -webkit-border-radius: 12px;
