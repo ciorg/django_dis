@@ -1,4 +1,4 @@
-import threading
+import threading, logging
 import sqlite3
 from datetime import datetime
 from time import sleep
@@ -9,6 +9,9 @@ class BitCoinPrice(object):
     def __init__(self):
         self.exchanges = ('cb', 'gem', 'kr', 'bi', 'bf', 'bs', 'gd')
         self.prices_dict = {}
+        logging.basicConfig(filename='logs/data.log', level=logging.INFO)
+        logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S')
+
 
     def get_price(self, exchange, coin):
         p_dict = {'bi': 'Exchanges("{}").binance()',
@@ -62,10 +65,14 @@ class BitCoinPrice(object):
 
         conn = sqlite3.connect("../db.sqlite3")
         c = conn.cursor()
-        c.execute('INSERT INTO crypto_bitcoin VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)', data)
-        conn.commit()
-        conn.close()
-        print("added more data: {}, {}, {}, {}, {}, {}, {}, {}, {}".format(*data))
+        try:
+            c.execute('INSERT INTO crypto_bitcoin VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)', data)
+            conn.commit()
+            conn.close()
+            logging.info("added data: {}, {}, {}, {}, {}, {}, {}, {}, {}".format(*data))
+
+        except Exception as e:
+            logging.exception("{}".format(e))
 
     def db_check(self):
         search = '''SELECT * FROM crypto_bitcoin'''

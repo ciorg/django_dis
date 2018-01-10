@@ -1,6 +1,7 @@
 import sqlite3
 from datetime import datetime
 from collections import namedtuple
+from .calcs import CalcClass
 
 from bokeh.plotting import figure, output_file, show, ColumnDataSource
 from bokeh.layouts import row, column
@@ -8,11 +9,10 @@ from bokeh.models import HoverTool
 from bokeh.embed import components
 
 
-class Bitcoin(object):
+class BitcoinClass(object):
 
     def __init__(self):
         self.db = "db.sqlite3"
-        self.table = "crypto_bitcoin"
 
     def db_search(self, search):
         conn = sqlite3.connect(self.db)
@@ -24,39 +24,15 @@ class Bitcoin(object):
 
     def get_data(self, tf):
         # search = "SELECT * FROM {} where ptime > datetime('now', '-31 hours', '-5 minutes')".format(self.table)
-        search = "SELECT * FROM {} order by id desc limit {}".format(self.table, tf)
+        search = "SELECT * FROM crypto_bitcoin order by id desc limit {}".format(tf)
         return self.db_search(search)
 
     def safety_check(self, mode, p):
         if  p < mode*0.5:
             return mode
-
+    
         else:
             return p
-
-    def get_profit(self, prices):
-
-        high = -10000
-        hp_data = tuple()
-        for x in range(len(prices), 0, -1):
-            if x >= 2:
-                p1, f1 = prices[x - 1].p, prices[x - 1].f
-
-                for y in range(x - 1, 0, -1):
-                    p2, f2 = prices[y - 1].p, prices[y - 1].f
-
-                    profit = abs(p1 - p2) - ((p1 * f1) + (p2 * f2))
-
-                    if profit > high:
-                        high = profit
-                        dir = [prices[x - 1], prices[y - 1]]
-                        dir.sort(reverse=True, key=lambda x: x.p)
-                        hp_data = (profit, "{}->{}".format(dir[0].ex, dir[1].ex))
-
-            else:
-                pass
-
-        return hp_data
 
     def graph_data(self, tf=60):
         btc = self.get_data(tf)
@@ -66,15 +42,17 @@ class Bitcoin(object):
         p_source = dict(profit=[], dir=[], color=[])
         time = []
 
+        btc.sort(key=lambda x: x[0])
+
         for p in btc:
             t = datetime.strptime(p[1], "%Y-%m-%d %H:%M:%S.%f")
             time.append(t)
 
-            gem_p, cb_p, kr_p, bi_p, bf_p, bs_p, gd_p = p[2], p[3], p[4], p[5], p[6], p[7], p[8]
+            gem_p, cb_p, bi_p, bf_p, bs_p, gd_p, kr_p = p[2], p[3], p[4], p[5], p[6], p[7], p[8]
 
             med_v = [gem_p, cb_p, kr_p, bi_p, bf_p, bs_p, gd_p]
             med_v.sort()
-            mode = med_v[1]
+            mode = med_v[3]
 
             gem_p = self.safety_check(mode, gem_p)
             cb_p = self.safety_check(mode, cb_p)
@@ -115,13 +93,14 @@ class Bitcoin(object):
                       pdata('bs', bs_p, 0.0025),
                       pdata('gd', gd_p, 0.0025))
 
-            profit, dir = self.get_profit(prices)
+            profit, dir = CalcClass().get_profit(prices)
 
             p_source['profit'].append(profit)
             p_source['dir'].append(dir)
 
             if profit > 0:
                 color = "green"
+
             else:
                 color = "red"
 

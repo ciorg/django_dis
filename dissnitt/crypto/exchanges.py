@@ -1,10 +1,20 @@
 import requests
 import json
+import logging
 
 
 class Exchanges(object):
     def __init__(self, coin):
         self.coin = coin
+        logging.basicConfig(filename='logs/exchanges.log', level=logging.INFO)
+        logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S')
+
+    def check(self, price):
+        if price:
+            return price
+
+        else:
+            return 1.001
 
     def binance(self):
         coins_dict = {"btc": "BTCUSDT"}
@@ -15,10 +25,11 @@ class Exchanges(object):
             pair = {"symbol": cf}
             data = requests.get(url, params=pair)
             jdata = json.loads(data.text)
-            return float(jdata['price'])
+            return self.check(float(jdata['price']))
 
-        except KeyError:
-            print("No coin on this exchange")
+        except Exception as e:
+            logging.exception("{}".format(e))
+            return 1.001
 
     def bitfinex(self):
         coins_dict = {'btc': 'tBTCUSD'}
@@ -30,10 +41,11 @@ class Exchanges(object):
             url = url.format(coins_dict.get(self.coin))
             ticker_data = requests.get(url)
             jdata = json.loads(ticker_data.text)
-            return float(jdata[6])
+            return self.check(float(jdata[6]))
 
-        except:
-            print("No coin on this exchange")
+        except Exception as e:
+            logging.exception("{}".format(e))
+            return 1.001
 
     def bitstamp(self):
         coins_dict = {'btc': 'btcusd'}
@@ -43,10 +55,11 @@ class Exchanges(object):
             url = url.format(coins_dict[self.coin])
             bit_r = requests.get(url)
             bit_r_json = json.loads(bit_r.text)
-            return float(bit_r_json.get('last'))
+            return self.check(float(bit_r_json.get('last')))
 
-        except:
-            print("No coin on this exchange")
+        except Exception as e:
+            logging.exception("{}".format(e))
+            return 1.001
 
     def coinbase(self):
         coins_dict = {'btc': 'BTC',
@@ -60,25 +73,29 @@ class Exchanges(object):
             url = url.format(cf)
             bit_r = requests.get(url)
             bit_r_json = json.loads(bit_r.text)
-            return float(bit_r_json.get('data').get("amount"))
 
-        except KeyError:
-            print("No coin on this exchange")
+            return self.check(float(bit_r_json.get('data').get("amount")))
+
+        except Exception as e:
+            logging.exception("{}".format(e))
+            return 1.001
 
     def gemini(self):
         coins_dict = {'btc': 'btcusd',
                       'eth': 'ethusd'}
 
         url = "https://api.gemini.com/v1/pubticker/{}"
+
         try:
             cf = coins_dict[self.coin]
             url = url.format(cf)
             ticker_data = requests.get(url)
             jdata = json.loads(ticker_data.text)
-            return float(jdata.get("ask"))
+            return self.check(float(jdata.get("ask")))
 
-        except KeyError:
-            print("No coin on this exchange")
+        except Exception as e:
+            logging.exception("{}".format(e))
+            return 1.001
 
     def gdax(self):
         coins_dict = {'btc': 'BTC-USD'}
@@ -89,10 +106,11 @@ class Exchanges(object):
             url = url.format(coins_dict[self.coin])
             ticker_data = requests.get(url)
             jdata = json.loads(ticker_data.text)
-            return float(jdata.get('bids')[0][0])
+            return self.check(float(jdata.get('bids')[0][0]))
 
-        except KeyError:
-            print("No coin on this exchange")
+        except Exception as e:
+            logging.exception("{}".format(e))
+            return 1.001
 
     def kraken(self):
         coins_dict = {'btc': 'XBTUSD',
@@ -101,20 +119,21 @@ class Exchanges(object):
 
         url = "https://api.kraken.com/0/public/Ticker?"
 
-        try:
-            cf = coins_dict[self.coin]
-            ccall = list(cf)
-            ccall.insert(0, "X")
-            ccall.insert(-3, "Z")
-            ccall = "".join(ccall)
+        cf = coins_dict[self.coin]
+        ccall = list(cf)
+        ccall.insert(0, "X")
+        ccall.insert(-3, "Z")
+        ccall = "".join(ccall)
+        pair = {"pair": cf}
 
-            pair = {"pair": cf}
+        try:
             data = requests.get(url, params=pair)
             jdata = json.loads(data.text)
-            return float(jdata.get('result').get(ccall).get('c')[0])
+            return self.check(float(jdata.get('result').get(ccall).get('c')[0]))
 
-        except KeyError:
-            print("No coin on this exchange")
+        except Exception as e:
+            logging.exception("{}".format(e))
+            return 1.001
 
 
 if __name__ == "__main__":

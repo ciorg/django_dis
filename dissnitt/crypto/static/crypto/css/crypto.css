@@ -1,6 +1,6 @@
 div.crypto_index a {
                      text-decoration: none;
-                     color: #8da4bf;
+                     color: white;
                      font-size:1.2em;}
 
 div.crypto_index { margin: auto;
@@ -10,6 +10,51 @@ div.crypto_index { margin: auto;
 div.tf_div {
         text-align: center;
         padding-top: 1%;
+}
+
+div.bitp {
+    width: 30%;
+}
+
+.bitp table {
+    text-align: center;
+    -moz-border-radius: 12px;
+    -webkit-border-radius: 12px;
+    border-radius: 12px;
+    border: 3px solid #8da4bf;
+    border-collapse: seperate;
+    border-spacing: 0px;
+}
+
+
+.bitp table th {
+   line-height: 1.5em;
+   padding-bottom: 3px;
+}
+
+.bitp table td {
+   line-height: 1.5em;
+   padding-left: 10px;
+   padding-right: 10px;
+}
+
+.static {
+    color: #304c89;
+    font-size: 1.3em;
+}
+
+.pbtc_usd {
+    color: white;
+
+    border-collapse: collapse;
+    font-size: 1.5em;
+}
+
+
+.tlink {
+
+    background-color: #8da4bf;
+
 }
 
 input[type=number] {
