@@ -13,7 +13,6 @@ class BitcoinClass(object):
 
     def __init__(self):
         self.db = "db.sqlite3"
-        self.table = "crypto_bitcoin"
 
     def db_search(self, search):
         conn = sqlite3.connect(self.db)
@@ -25,7 +24,7 @@ class BitcoinClass(object):
 
     def get_data(self, tf):
         # search = "SELECT * FROM {} where ptime > datetime('now', '-31 hours', '-5 minutes')".format(self.table)
-        search = "SELECT * FROM {} order by id desc limit {}".format(self.table, tf)
+        search = "SELECT * FROM crypto_bitcoin order by id desc limit {}".format(tf)
         return self.db_search(search)
 
     def safety_check(self, mode, p):
@@ -43,16 +42,17 @@ class BitcoinClass(object):
         p_source = dict(profit=[], dir=[], color=[])
         time = []
 
+        btc.sort(key=lambda x: x[0])
+
         for p in btc:
             t = datetime.strptime(p[1], "%Y-%m-%d %H:%M:%S.%f")
             time.append(t)
 
-            gem_p, cb_p, kr_p, bi_p, bf_p, bs_p, gd_p = p[2], p[3], p[4], p[5], p[6], p[7], p[8]
-            print(gem_p, cb_p, kr_p, bi_p, bf_p, bs_p, gd_p )
+            gem_p, cb_p, bi_p, bf_p, bs_p, gd_p, kr_p = p[2], p[3], p[4], p[5], p[6], p[7], p[8]
 
             med_v = [gem_p, cb_p, kr_p, bi_p, bf_p, bs_p, gd_p]
             med_v.sort()
-            mode = med_v[1]
+            mode = med_v[3]
 
             gem_p = self.safety_check(mode, gem_p)
             cb_p = self.safety_check(mode, cb_p)

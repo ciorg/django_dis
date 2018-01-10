@@ -11,12 +11,14 @@ from .models import Bitcoin
 @login_required(login_url='/mylogin/login/')
 def index(request):
 
-    last_entry = Bitcoin.objects.latest('id')
-
+    last_entry = Bitcoin.objects.last()
     profit = CalcClass().views_data(last_entry)
 
-    context = {'profit': profit[0],
-               'dir': profit[1]}
+    context = {
+               'profit': profit[0],
+               'dir': profit[1],
+               'pp': profit[2],
+              }
 
     return render(request, 'crypto/index.html', context)
 

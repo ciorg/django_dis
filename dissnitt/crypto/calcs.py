@@ -25,7 +25,7 @@ class CalcClass(object):
                         if profit > high:
                             high = profit
                             dir = [prices[x - 1], prices[y - 1]]
-                            dir.sort(reverse=True, key=lambda x: x.p)
+                            dir.sort(key=lambda x: x.p)
                             hp_data = (profit, "{}->{}".format(dir[0].ex, dir[1].ex))
 
             else:
@@ -46,6 +46,19 @@ class CalcClass(object):
 
         return ex_dict.get(ex)
 
+    def price_percentage(self, prices, dir):
+        p1, p2 = 0, 0
+
+        for p in prices:
+            if dir[0] == p.ex:
+                p1 = float(p.p)
+
+            if dir[1] == p.ex:
+                p2 = float(p.p)
+
+        dif = abs(p1 - p2)
+        return dif/p1
+
     def views_data(self, last_entry):
         pdata = namedtuple('pdata', 'ex, p, f')
 
@@ -61,5 +74,8 @@ class CalcClass(object):
 
         dir = data[1]
         dir = dir.split("->")
-        vdir = "Buy on {}, Sell on {}".format(self.exchanges("".join(dir[0])), self.exchanges("".join(dir[1])))
-        return data[0], vdir
+
+        p_dif = self.price_percentage(prices, dir)
+
+        vdir = "{} -> {}".format(self.exchanges("".join(dir[0])), self.exchanges("".join(dir[1])))
+        return data[0], vdir, p_dif * 100

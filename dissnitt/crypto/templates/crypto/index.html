@@ -10,9 +10,23 @@
 {% block content %}
 <div class="crypto_index">
     <div class="bitp">
-        {{ profit }}<br>
-        {{ dir }}
+        <table>
+            <tr>
+                <td>BitCoin/ USD</td>
+            </tr>
+            <tr>
+                <td class="profit">$ {{ profit|floatformat:2 }}</td>
+            </tr>
+            <tr>
+                <td class="profit">{{ pp|floatformat:2 }} %</td>
+            </tr>
+            <tr>
+                <td>{{ dir }}</td>
+            </tr>
+            <tr>
+                <td><a href="{% url 'crypto:btc' %}">View History</a></td>
+            </tr>
+        </table>
     </div>
-    <a href="{% url 'crypto:btc' %}">Bitcoin Price by Exchanges</a>
 </div>
 {% endblock %}
