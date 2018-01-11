@@ -13,12 +13,15 @@ class CalcClass(object):
             if x >= 2:
                 p1, f1 = prices[x - 1].p, prices[x - 1].f
 
-                if p1 == 0 or p1 is None:
+                if p1 == 1.001:
                     pass
 
                 else:
                     for y in range(x - 1, 0, -1):
                         p2, f2 = prices[y - 1].p, prices[y - 1].f
+
+                        if p2 == 1.001:
+                            p2 = p1
 
                         profit = abs(p1 - p2) - ((p1 * f1) + (p2 * f2))
 
