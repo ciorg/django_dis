@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from .calcs import CalcClass
 from .forms import TimeForm
-from .visualizer import BitcoinClass
+from .visualizer import GraphClass
 from .models import Bitcoin
 
 @login_required(login_url='/mylogin/login/')
@@ -25,11 +25,12 @@ def index(request):
 @login_required(login_url='/mylogin/login/')
 def btc(request):
 
+    table = "bitcoin"
     if request.method == 'POST':
         form = TimeForm(request.POST)
         if form.is_valid():
             tf = form.cleaned_data['time_frame']
-            script, div = BitcoinClass().graph_data(tf)
+            script, div = GraphClass(table).graph_data(tf)
             context = {"script": script,
                        "div": div,
                        "form": form}
@@ -38,7 +39,7 @@ def btc(request):
 
     else:
         form = TimeForm()
-        script, div = BitcoinClass().graph_data()
+        script, div = GraphClass(table).graph_data()
         context = {"script": script,
                    "div": div,
                    "form": form}

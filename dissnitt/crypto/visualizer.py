@@ -9,10 +9,11 @@ from bokeh.models import HoverTool
 from bokeh.embed import components
 
 
-class BitcoinClass(object):
+class GraphClass(object):
 
-    def __init__(self):
+    def __init__(self, table):
         self.db = "db.sqlite3"
+        self.table = table
 
     def db_search(self, search):
         conn = sqlite3.connect(self.db)
@@ -24,7 +25,7 @@ class BitcoinClass(object):
 
     def get_data(self, tf):
         # search = "SELECT * FROM {} where ptime > datetime('now', '-31 hours', '-5 minutes')".format(self.table)
-        search = "SELECT * FROM crypto_bitcoin order by id desc limit {}".format(tf)
+        search = "SELECT * FROM crypto_{} order by id desc limit {}".format(self.table, tf)
         return self.db_search(search)
 
     def safety_check(self, mode, p):
@@ -35,16 +36,16 @@ class BitcoinClass(object):
             return p
 
     def graph_data(self, tf=60):
-        btc = self.get_data(tf)
+        price_data = self.get_data(tf)
         gem_source, cb_source, kr_source = dict(y=[], ex=[]),  dict(y=[], ex=[]), dict(y=[], ex=[])
         bi_source, bf_source = dict(y=[], ex=[]), dict(y=[], ex=[])
         gd_source, bs_source = dict(y=[], ex=[]), dict(y=[], ex=[])
         p_source = dict(profit=[], dir=[], color=[])
         time = []
 
-        btc.sort(key=lambda x: x[0])
+        price_data.sort(key=lambda x: x[0])
 
-        for p in btc:
+        for p in price_data:
             t = datetime.strptime(p[1], "%Y-%m-%d %H:%M:%S.%f")
             time.append(t)
 
