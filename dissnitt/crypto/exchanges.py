@@ -26,7 +26,7 @@ class Exchanges(object):
             cf = coins_dict[self.coin]
             pair = {"symbol": cf}
             data = requests.get(url, params=pair)
-            jdata = json.loads(data.text)
+            jdata = json.loads(data.text, timeout=0.5)
             return self.check(float(jdata['price']))
 
         except Exception as e:
@@ -43,7 +43,7 @@ class Exchanges(object):
 
         try:
             url = url.format(coins_dict.get(self.coin))
-            ticker_data = requests.get(url)
+            ticker_data = requests.get(url, timeout=0.5)
             jdata = json.loads(ticker_data.text)
             return self.check(float(jdata[6]))
 
@@ -59,7 +59,7 @@ class Exchanges(object):
 
         try:
             url = url.format(coins_dict[self.coin])
-            bit_r = requests.get(url)
+            bit_r = requests.get(url, timeout=0.5)
             bit_r_json = json.loads(bit_r.text)
             return self.check(float(bit_r_json.get('last')))
 
@@ -77,7 +77,7 @@ class Exchanges(object):
         try:
             cf = coins_dict[self.coin]
             url = url.format(cf)
-            bit_r = requests.get(url)
+            bit_r = requests.get(url, timeout=0.5)
             bit_r_json = json.loads(bit_r.text)
 
             return self.check(float(bit_r_json.get('data').get("amount")))
@@ -95,7 +95,7 @@ class Exchanges(object):
         try:
             cf = coins_dict[self.coin]
             url = url.format(cf)
-            ticker_data = requests.get(url)
+            ticker_data = requests.get(url, timeout=0.5)
             jdata = json.loads(ticker_data.text)
             return self.check(float(jdata.get("ask")))
 
@@ -111,7 +111,7 @@ class Exchanges(object):
 
         try:
             url = url.format(coins_dict[self.coin])
-            ticker_data = requests.get(url)
+            ticker_data = requests.get(url, timeout=0.5)
             jdata = json.loads(ticker_data.text)
             return self.check(float(jdata.get('bids')[0][0]))
 
@@ -134,7 +134,7 @@ class Exchanges(object):
         pair = {"pair": cf}
 
         try:
-            data = requests.get(url, params=pair)
+            data = requests.get(url, params=pair, timeout=0.5)
             jdata = json.loads(data.text)
             return self.check(float(jdata.get('result').get(ccall).get('c')[0]))
 
@@ -149,7 +149,7 @@ if __name__ == "__main__":
     # print (c.bitfinex())
     # print(c.bitstamp())
     # print(c.coinbase())
-    # print(c.gemini())
+    print(c.gemini())
     # print(c.gdax())
-    print(c.kraken())
+    # print(c.kraken())
 

@@ -5,7 +5,7 @@ from time import sleep
 from exchanges import Exchanges
 
 
-class BitCoinPrice(object):
+class AddPriceDataClass(object):
 
     def __init__(self, coin):
         self.exchanges = ('cb', 'gem', 'kr', 'bi', 'bf', 'bs', 'gd')
