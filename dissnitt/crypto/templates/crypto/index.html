@@ -6,32 +6,51 @@
     <script type="text/javascript" src="{% static 'crypto/javascript/crypto.js' %}" ></script>
 {% endblock %}
 {% block page_header %}
-    <h1>Crypto Stuff</h1>
+    <h1>Crypto Arbitrage</h1>
 {% endblock %}
 {% block content %}
 <div class="crypto_index">
     <div class="bitp" id="btc_d">
         <table>
             <tr>
-                <th class="static">BitCoin/ USD</th>
+                <th class="static">Bitcoin/ USD</th>
             </tr>
             <tr>
-                <td class="pbtc_usd" >$ {{ profit|floatformat:2 }}</td>
+                <td class="pbtc_usd" >$ {{ btc_data.0|floatformat:2 }}</td>
             </tr>
             <tr>
-                <td class="pbtc_usd">{{ pp|floatformat:2 }} %</td>
+                <td class="pbtc_usd">{{ btc_data.2|floatformat:2 }} %</td>
             </tr>
             <tr>
-                <td class="static">{{ dir }}</td>
+                <td class="static">{{ btc_data.1 }}</td>
             </tr>
             <tr>
                 <td class="tlink"><a href="{% url 'crypto:btc' %}">View Data</a></td>
             </tr>
         </table>
     </div>
+    <div class="ethp" id="eth_d">
+        <table>
+            <tr>
+                <th class="static">Etherium/ USD</th>
+            </tr>
+            <tr>
+                <td class="peth_usd" >$ {{ eth_data.0|floatformat:2 }}</td>
+            </tr>
+            <tr>
+                <td class="peth_usd">{{ eth_data.2|floatformat:2 }} %</td>
+            </tr>
+            <tr>
+                <td class="static">{{ eth_data.1 }}</td>
+            </tr>
+            <tr>
+                <td class="tlink"><a href="{% url 'crypto:eth' %}">View Data</a></td>
+            </tr>
+        </table>
+    </div>
 </div>
 <script>
-    document.getElementById("btc_d").addEventListener("load", profitBGcolor('pbtc_usd', '{{ profit}}'));
-
+    document.getElementById("btc_d").addEventListener("load", profitBGcolor('pbtc_usd', '{{ btc_data.0 }}'));
+    document.getElementById("eth_d").addEventListener("load", profitBGcolor('peth_usd', '{{ eth_data.0 }}'));
 </script>
 {% endblock %}

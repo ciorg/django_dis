@@ -17,14 +17,16 @@ class Exchanges(object):
             return 1.001
 
     def binance(self):
-        coins_dict = {"btc": "BTCUSDT"}
+        coins_dict = {"btc": "BTCUSDT",
+                      "eth": "ETHUSDT"}
+
         url = "https://api.binance.com/api/v3/ticker/price?"
 
         try:
             cf = coins_dict[self.coin]
             pair = {"symbol": cf}
             data = requests.get(url, params=pair)
-            jdata = json.loads(data.text)
+            jdata = json.loads(data.text, timeout=0.5)
             return self.check(float(jdata['price']))
 
         except Exception as e:
@@ -32,14 +34,16 @@ class Exchanges(object):
             return 1.001
 
     def bitfinex(self):
-        coins_dict = {'btc': 'tBTCUSD'}
+        coins_dict = {'btc': 'tBTCUSD',
+                      'eth': 'tETHUSD'}
+
         url = "https://api.bitfinex.com/v2/ticker/{}"
 
         # [ BID, BID_SIZE, ASK, ASK_SIZE, DAILY_CHANGE, DAILY_CHANGE_PERC, LAST_PRICE, VOLUME, HIGH, LOW ]
 
         try:
             url = url.format(coins_dict.get(self.coin))
-            ticker_data = requests.get(url)
+            ticker_data = requests.get(url, timeout=0.5)
             jdata = json.loads(ticker_data.text)
             return self.check(float(jdata[6]))
 
@@ -48,12 +52,14 @@ class Exchanges(object):
             return 1.001
 
     def bitstamp(self):
-        coins_dict = {'btc': 'btcusd'}
+        coins_dict = {'btc': 'btcusd',
+                      'eth': 'ethusd'}
+
         url = 'https://www.bitstamp.net/api/v2/ticker/{}/'
 
         try:
             url = url.format(coins_dict[self.coin])
-            bit_r = requests.get(url)
+            bit_r = requests.get(url, timeout=0.5)
             bit_r_json = json.loads(bit_r.text)
             return self.check(float(bit_r_json.get('last')))
 
@@ -62,16 +68,16 @@ class Exchanges(object):
             return 1.001
 
     def coinbase(self):
-        coins_dict = {'btc': 'BTC',
-                      'eth': 'ETH',
-                      'ltc': 'LTC'}
+        coins_dict = {'btc': 'BTC-USD',
+                      'eth': 'ETH-USD',
+                      'ltc': 'LTC-USD'}
 
-        url = "https://api.coinbase.com/v2/prices/{}-USD/spot"
+        url = "https://api.coinbase.com/v2/prices/{}/spot"
 
         try:
             cf = coins_dict[self.coin]
             url = url.format(cf)
-            bit_r = requests.get(url)
+            bit_r = requests.get(url, timeout=0.5)
             bit_r_json = json.loads(bit_r.text)
 
             return self.check(float(bit_r_json.get('data').get("amount")))
@@ -89,7 +95,7 @@ class Exchanges(object):
         try:
             cf = coins_dict[self.coin]
             url = url.format(cf)
-            ticker_data = requests.get(url)
+            ticker_data = requests.get(url, timeout=0.5)
             jdata = json.loads(ticker_data.text)
             return self.check(float(jdata.get("ask")))
 
@@ -98,13 +104,14 @@ class Exchanges(object):
             return 1.001
 
     def gdax(self):
-        coins_dict = {'btc': 'BTC-USD'}
+        coins_dict = {'btc': 'BTC-USD',
+                      'eth': 'ETH-USD'}
 
         url = 'https://api.gdax.com/products/{}/book'
 
         try:
             url = url.format(coins_dict[self.coin])
-            ticker_data = requests.get(url)
+            ticker_data = requests.get(url, timeout=0.5)
             jdata = json.loads(ticker_data.text)
             return self.check(float(jdata.get('bids')[0][0]))
 
@@ -127,7 +134,7 @@ class Exchanges(object):
         pair = {"pair": cf}
 
         try:
-            data = requests.get(url, params=pair)
+            data = requests.get(url, params=pair, timeout=0.5)
             jdata = json.loads(data.text)
             return self.check(float(jdata.get('result').get(ccall).get('c')[0]))
 
@@ -137,5 +144,12 @@ class Exchanges(object):
 
 
 if __name__ == "__main__":
-    c = Exchanges("btc")
-    print(c.bitstamp())
+    c = Exchanges("eth")
+    # print(c.binance())
+    # print (c.bitfinex())
+    # print(c.bitstamp())
+    # print(c.coinbase())
+    print(c.gemini())
+    # print(c.gdax())
+    # print(c.kraken())
+
