@@ -16,13 +16,16 @@
                 <th class="static">Bitcoin/ USD</th>
             </tr>
             <tr>
-                <td class="pbtc_usd" >$ {{ btc_data.0|floatformat:2 }}</td>
+                <td class="pbtc_usd" >$ {{ btc_data.0 }}</td>
             </tr>
             <tr>
-                <td class="pbtc_usd">{{ btc_data.2|floatformat:2 }} %</td>
+                <td class="pbtc_usd">{{ btc_data.5|floatformat:2 }} %</td>
             </tr>
             <tr>
-                <td class="static">{{ btc_data.1 }}</td>
+                <td class="static">{{ btc_data.1 }} -> {{ btc_data.2 }}</td>
+            </tr>
+             <tr>
+                <td class="static">${{ btc_data.3 }} -> ${{ btc_data.4 }}</td>
             </tr>
             <tr>
                 <td class="tlink"><a href="{% url 'crypto:btc' %}">View Data</a></td>
@@ -38,10 +41,13 @@
                 <td class="peth_usd" >$ {{ eth_data.0|floatformat:2 }}</td>
             </tr>
             <tr>
-                <td class="peth_usd">{{ eth_data.2|floatformat:2 }} %</td>
+                <td class="peth_usd">{{ eth_data.5|floatformat:2 }} %</td>
             </tr>
             <tr>
-                <td class="static">{{ eth_data.1 }}</td>
+                <td class="static">{{ eth_data.1 }} -> {{ eth_data.2 }}</td>
+            </tr>
+            <tr>
+                <td class="static">${{ eth_data.3 }} -> ${{ eth_data.4 }}</td>
             </tr>
             <tr>
                 <td class="tlink"><a href="{% url 'crypto:eth' %}">View Data</a></td>
