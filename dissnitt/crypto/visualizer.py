@@ -25,15 +25,11 @@ class GraphClass(object):
 
     def get_data(self, tf):
         # search = "SELECT * FROM {} where ptime > datetime('now', '-31 hours', '-5 minutes')".format(self.table)
-        search = "SELECT * FROM crypto_{} order by id desc limit {}".format(self.table, tf)
+        search = ('SELECT id, ptime, gemini_price, coinbase_price, binance_price, bitfinex_price, bitstamp_price, gdax_price,'
+                  'kraken_price FROM crypto_{} order by id desc limit {}'.format(self.table, tf))
+
         return self.db_search(search)
 
-    def safety_check(self, mode, p):
-        if  p < mode*0.5:
-            return mode
-    
-        else:
-            return p
 
     def graph_data(self, tf=60):
         price_data = self.get_data(tf)
@@ -49,19 +45,9 @@ class GraphClass(object):
             t = datetime.strptime(p[1], "%Y-%m-%d %H:%M:%S.%f")
             time.append(t)
 
-            gem_p, cb_p, bi_p, bf_p, bs_p, gd_p, kr_p = p[2], p[3], p[4], p[5], p[6], p[7], p[8]
+            checked_v = [v if float(v) != 1.001 else 'nan' for v in p[2:9]]
 
-            med_v = [gem_p, cb_p, kr_p, bi_p, bf_p, bs_p, gd_p]
-            med_v.sort()
-            mode = med_v[3]
-
-            gem_p = self.safety_check(mode, gem_p)
-            cb_p = self.safety_check(mode, cb_p)
-            kr_p = self.safety_check(mode, kr_p)
-            bi_p = self.safety_check(mode, bi_p)
-            bf_p = self.safety_check(mode, bf_p)
-            bs_p = self.safety_check(mode, bs_p)
-            gd_p = self.safety_check(mode, gd_p)
+            gem_p, cb_p, bi_p, bf_p, bs_p, gd_p, kr_p = checked_v
 
             gem_source['y'].append(gem_p)
             gem_source['ex'].append("Gemini")
