@@ -30,8 +30,8 @@ class CalcClass(object):
                             high = profit
                             dir = [prices[x - 1], prices[y - 1]]
                             dir.sort(key=lambda x: x.p)
-                            p_perc = (profit/dir[0].p)*100
-                            hp_data = (profit, dir[0].ex, dir[1].ex, dir[0].p, dir[1].p, p_perc)
+
+                            hp_data = (profit, "{}->{}".format(dir[0].ex, dir[1].ex))
 
             else:
                 pass
@@ -51,6 +51,17 @@ class CalcClass(object):
 
         return ex_dict.get(ex)
 
+    def arbit_data(self, prices, dir):
+        d_dict = {}
+
+        for i in prices:
+            d_dict[i.ex] = i.p
+
+        p1 = d_dict.get(dir[0])
+        p2 = d_dict.get(dir[1])
+
+        return p1, p2
+
     def views_data(self, last_entry):
         pdata = namedtuple('pdata', 'ex, p, f')
 
@@ -63,5 +74,9 @@ class CalcClass(object):
                   pdata('gd', float(last_entry.gdax_price), 0.0025))
 
         data = self.get_profit(prices)
-        return ("{:,.2f}".format(data[0]), self.exchanges(data[1]), self.exchanges(data[2]),
-                "{:,.2f}".format(data[3]), "{:,.2f}".format(data[4]), "{:,.2f}".format(data[5]))
+        dir = data[1].split("->")
+        ps = self.arbit_data(prices, dir)
+        p_perc = (data[0]/ps[0])
+
+        return ("{:,.2f}".format(data[0]), self.exchanges(dir[0]), self.exchanges(dir[1]),
+                "{:,.2f}".format(ps[0]), "{:,.2f}".format(ps[1]), "{:,.2f}".format(p_perc))
