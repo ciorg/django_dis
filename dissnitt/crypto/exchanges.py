@@ -18,24 +18,26 @@ class Exchanges(object):
 
     def binance(self):
         coins_dict = {"btc": "BTCUSDT",
-                      "eth": "ETHUSDT"}
+                      "eth": "ETHUSDT",
+                      "ethb": "ETHBTC"}
 
         url = "https://api.binance.com/api/v3/ticker/price?"
 
         try:
             cf = coins_dict[self.coin]
             pair = {"symbol": cf}
-            data = requests.get(url, params=pair)
-            jdata = json.loads(data.text, timeout=0.5)
+            data = requests.get(url, params=pair, timeout=0.5)
+            jdata = json.loads(data.text)
             return self.check(float(jdata['price']))
 
         except Exception as e:
             logging.exception("{}".format(e))
-            return 1.001
+            return 0.000
 
     def bitfinex(self):
         coins_dict = {'btc': 'tBTCUSD',
-                      'eth': 'tETHUSD'}
+                      'eth': 'tETHUSD',
+                      'ethb': 'tETHBTC'}
 
         url = "https://api.bitfinex.com/v2/ticker/{}"
 
@@ -49,11 +51,12 @@ class Exchanges(object):
 
         except Exception as e:
             logging.exception("{}".format(e))
-            return 1.001
+            return 0.000
 
     def bitstamp(self):
         coins_dict = {'btc': 'btcusd',
-                      'eth': 'ethusd'}
+                      'eth': 'ethusd',
+                      'ethb': 'ethbtc'}
 
         url = 'https://www.bitstamp.net/api/v2/ticker/{}/'
 
@@ -65,12 +68,13 @@ class Exchanges(object):
 
         except Exception as e:
             logging.exception("{}".format(e))
-            return 1.001
+            return 0.000
 
     def coinbase(self):
         coins_dict = {'btc': 'BTC-USD',
                       'eth': 'ETH-USD',
-                      'ltc': 'LTC-USD'}
+                      'ltc': 'LTC-USD',
+                      }
 
         url = "https://api.coinbase.com/v2/prices/{}/spot"
 
@@ -84,11 +88,12 @@ class Exchanges(object):
 
         except Exception as e:
             logging.exception("{}".format(e))
-            return 1.001
+            return 0.000
 
     def gemini(self):
         coins_dict = {'btc': 'btcusd',
-                      'eth': 'ethusd'}
+                      'eth': 'ethusd',
+                      'ethb': 'ethbtc'}
 
         url = "https://api.gemini.com/v1/pubticker/{}"
 
@@ -101,11 +106,12 @@ class Exchanges(object):
 
         except Exception as e:
             logging.exception("{}".format(e))
-            return 1.001
+            return 0.000
 
     def gdax(self):
         coins_dict = {'btc': 'BTC-USD',
-                      'eth': 'ETH-USD'}
+                      'eth': 'ETH-USD',
+                      'ethb': 'ETH-BTC'}
 
         url = 'https://api.gdax.com/products/{}/book'
 
@@ -117,12 +123,13 @@ class Exchanges(object):
 
         except Exception as e:
             logging.exception("{}".format(e))
-            return 1.001
+            return 0.000
 
     def kraken(self):
         coins_dict = {'btc': 'XBTUSD',
                       'eth': 'ETHUSD',
-                      'ltc': 'LTCUSD'}
+                      'ltc': 'LTCUSD',
+                      'ethb': 'ETHXBT'}
 
         url = "https://api.kraken.com/0/public/Ticker?"
 
@@ -140,16 +147,16 @@ class Exchanges(object):
 
         except Exception as e:
             logging.exception("{}".format(e))
-            return 1.001
+            return 0.000
 
 
 if __name__ == "__main__":
-    c = Exchanges("eth")
+    c = Exchanges("ethb")
     # print(c.binance())
     # print (c.bitfinex())
     # print(c.bitstamp())
     # print(c.coinbase())
-    print(c.gemini())
-    # print(c.gdax())
+    # print(c.gemini())
+    print(c.gdax())
     # print(c.kraken())
 

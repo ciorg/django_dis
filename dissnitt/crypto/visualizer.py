@@ -18,72 +18,78 @@ class GraphClass(object):
     def db_search(self, search):
         conn = sqlite3.connect(self.db)
         c = conn.cursor()
-        q = c.execute(search)
-        data = [x for x in q]
+        c.execute(search)
+        data = c.fetchall()
+        mdata = [x[0] for x in c.description]
         conn.close()
-        return data
+        return data, mdata
 
     def get_data(self, tf):
-        # search = "SELECT * FROM {} where ptime > datetime('now', '-31 hours', '-5 minutes')".format(self.table)
-        search = ('SELECT id, ptime, gemini_price, coinbase_price, binance_price, bitfinex_price, bitstamp_price, gdax_price,'
-                  'kraken_price FROM crypto_{} order by id desc limit {}'.format(self.table, tf))
+        cprice_dict = {'bitcoin': 'gemini_price, coinbase_price, binance_price, bitfinex_price,'
+                                  'bitstamp_price, gdax_price, kraken_price',
+
+                       'etherium': 'gemini_price, coinbase_price, binance_price, bitfinex_price,'
+                                   'bitstamp_price, gdax_price, kraken_price',
+
+                       'etheriumbtc': 'gemini_price, binance_price, bitfinex_price,'
+                                       'bitstamp_price, gdax_price, kraken_price'}
+
+        search = ('SELECT id, ptime, {} FROM crypto_{} order by id desc limit {}'
+                  .format(cprice_dict.get(self.table), self.table, tf))
 
         return self.db_search(search)
 
+    def data_sources(self, tf):
+        data, mdata = self.get_data(tf)
 
-    def graph_data(self, tf=60):
-        price_data = self.get_data(tf)
-        gem_source, cb_source, kr_source = dict(y=[], ex=[]),  dict(y=[], ex=[]), dict(y=[], ex=[])
-        bi_source, bf_source = dict(y=[], ex=[]), dict(y=[], ex=[])
-        gd_source, bs_source = dict(y=[], ex=[]), dict(y=[], ex=[])
-        p_source = dict(profit=[], dir=[], color=[])
-        time = []
+        gem_source = dict(time=[], y=[], ex=[])
+        cb_source = dict(time=[], y=[], ex=[])
+        kr_source = dict(time=[], y=[], ex=[])
+        bi_source = dict(time=[], y=[], ex=[])
+        bf_source = dict(time=[], y=[], ex=[])
+        gd_source = dict(time=[], y=[], ex=[])
+        bs_source = dict(time=[], y=[], ex=[])
+        p_source = dict(time=[], profit=[], dir=[], color=[])
 
-        price_data.sort(key=lambda x: x[0])
+        gem_p, cb_p, kr_p, bi_p, bs_p, gd_p, bf_p = 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000
 
-        for p in price_data:
-            t = datetime.strptime(p[1], "%Y-%m-%d %H:%M:%S.%f")
-            time.append(t)
+        exchanges = {'gemini_price': [gem_source, 'Gemini', 'gem', gem_p, 0.0149, 'blue'],
+                     'coinbase_price': [cb_source, 'Coinbase', 'cb', cb_p, 0.0025, 'red'],
+                     'kraken_price': [kr_source, 'Kraken', 'kr', kr_p, 0.0026, 'orange'],
+                     'binance_price': [bi_source, 'Binance', 'bi', bi_p, 0.001, 'black'],
+                     'bitfinex_price': [bf_source, 'Bitfinex', 'bf', bf_p, 0.002, 'green'],
+                     'gdax_price': [gd_source, 'GDAX', 'gd', gd_p, 0.0025, 'yellow'],
+                     'bitstamp_price': [bs_source, 'Bitstamp', 'bs', bs_p, 0.0025, 'purple']}
 
-            checked_v = [v if float(v) != 1.001 else 'nan' for v in p[2:9]]
+        data.sort(key=lambda x: x[0])
 
-            gem_p, cb_p, bi_p, bf_p, bs_p, gd_p, kr_p = checked_v
+        for d in data:
+            time = datetime.strptime(d[1], "%Y-%m-%d %H:%M:%S.%f")
+            for x in range(2, len(d)):
+                try:
+                    exd = exchanges[mdata[x]]
+                    p = float(d[x])
 
-            gem_source['y'].append(gem_p)
-            gem_source['ex'].append("Gemini")
+                    if p == 0.0:
+                        price = 'nan'
 
-            cb_source['y'].append(cb_p)
-            cb_source['ex'].append("Coinbase")
+                    else:
+                        price = p
 
-            kr_source['y'].append(kr_p)
-            kr_source['ex'].append("Kraken")
+                    exd[3] = price
+                    exd[0].get('y').append(price)
+                    exd[0].get('ex').append(exd[1])
+                    exd[0].get('time').append(time)
 
-            bi_source['y'].append(bi_p)
-            bi_source['ex'].append("Binance")
-
-            bf_source['y'].append(bf_p)
-            bf_source['ex'].append("Bitfinex")
-
-            bs_source['y'].append(bs_p)
-            bs_source['ex'].append("Bitstamp")
-
-            gd_source['y'].append(gd_p)
-            gd_source['ex'].append("GDAX")
+                except KeyError:
+                    pass
 
             pdata = namedtuple('pdata', 'ex, p, f')
-
-            prices = (pdata("cb", cb_p, 0.0149),
-                      pdata("gem", gem_p, 0.0025),
-                      pdata("kr", kr_p, 0.0026),
-                      pdata('bi', bi_p, 0.001),
-                      pdata('bf', bf_p, 0.002),
-                      pdata('bs', bs_p, 0.0025),
-                      pdata('gd', gd_p, 0.0025))
-
+            prices = [pdata(*exchanges.get(z)[2:5]) for z in exchanges]
             profit, dir = CalcClass().get_profit(prices)
-
             p_source['profit'].append(profit)
             p_source['dir'].append(dir)
+            p_source['time'].append(time)
 
             if profit > 0:
                 color = "green"
@@ -93,7 +99,11 @@ class GraphClass(object):
 
             p_source['color'].append(color)
 
-        # output_file("test.html")
+        return exchanges, p_source
+
+    def graph_data(self, tf=10):
+
+        exchanges, p_source = self.data_sources(tf)
 
         hover = HoverTool(
             tooltips=[("price", "$y{$0,0.00}"),
@@ -113,17 +123,19 @@ class GraphClass(object):
                             mode="vline"
                             )
 
-        gem_source['time'] = cb_source['time'] = kr_source['time'] = p_source['time'] = bi_source['time'] = time
-        bf_source['time'] = bs_source['time'] = gd_source['time'] = time
+        p = figure(plot_width=1300, plot_height=500, x_axis_type="datetime", title="Price by Exchange")
 
-        p = figure(plot_width=1300, plot_height=500, x_axis_type="datetime", title="Bitcoin Price by Exchange")
-        p.line('time', 'y', source=gem_source, line_width=2, legend="Gemini", color="blue")
-        p.line('time', 'y', source=cb_source, line_width=2, legend="Coinbase", color="orange")
-        p.line('time', 'y', source=kr_source, line_width=2, legend="Kraken", color="green")
-        p.line('time', 'y', source=bi_source, line_width=2, legend="Binance", color="black")
-        p.line('time', 'y', source=bf_source, line_width=2, legend="Bitfinex", color="yellow")
-        p.line('time', 'y', source=bs_source, line_width=2, legend="Bitstamp", color="purple")
-        p.line('time', 'y', source=gd_source, line_width=2, legend="GDAX", color="red")
+        for exchange in exchanges:
+
+            if exchanges[exchange][0].get('y'):
+                source = exchanges[exchange][0]
+                ex = exchanges[exchange][1]
+                color = exchanges[exchange][5]
+
+                p.line('time', 'y', source=source, legend=ex, line_width= 2, color=color)
+
+            else:
+                pass
 
         p.legend.click_policy = "hide"
         p.legend.location = "bottom_left"
@@ -134,7 +146,10 @@ class GraphClass(object):
         pd.triangle(x='time', y='profit', source=p_source, size=10, fill_color='color')
         pd.add_tools(hover_p)
         script, div = components(column(pd, p))
+
         return script, div
 
 if __name__ == "__main__":
     pass
+    # a = GraphClass('etheriumbtc')
+    # print(a.data_sources(10))

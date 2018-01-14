@@ -13,14 +13,14 @@ class CalcClass(object):
             if x >= 2:
                 p1, f1 = prices[x - 1].p, prices[x - 1].f
 
-                if p1 == 1.001 or p1 == 'nan':
+                if p1 == 0.000 or p1 == 'nan':
                     pass
 
                 else:
                     for y in range(x - 1, 0, -1):
                         p2, f2 = prices[y - 1].p, prices[y - 1].f
 
-                        if p2 == 1.001 or p2 == 'nan':
+                        if p2 == 0.000 or p2 == 'nan':
                             continue
 
                         else:

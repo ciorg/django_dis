@@ -24,6 +24,29 @@ def index(request):
 
     return render(request, 'crypto/index.html', context)
 
+def pdatag(request, table):
+    if request.method == 'POST':
+        form = TimeForm(request.POST)
+        if form.is_valid():
+            tf = form.cleaned_data['time_frame']
+            script, div = GraphClass(table).graph_data(tf)
+            context = {"script": script,
+                       "div": div,
+                       "form": form,
+                       'coin': 'Bitcoin'}
+
+            return render(request, 'crypto/btc.html', context)
+
+    else:
+        form = TimeForm()
+        script, div = GraphClass(table).graph_data()
+        context = {"script": script,
+                   "div": div,
+                   "form": form}
+
+        return render(request, 'crypto/btc.html', context)
+
+
 @login_required(login_url='/mylogin/login/')
 def btc(request):
 
