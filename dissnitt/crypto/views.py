@@ -6,51 +6,38 @@ from django.contrib.auth.decorators import login_required
 from .calcs import CalcClass
 from .forms import TimeForm
 from .visualizer import GraphClass
-from .models import Bitcoin, Etherium
+from .models import Bitcoin, Etherium, EtheriumBTC
+
 
 @login_required(login_url='/mylogin/login/')
 def index(request):
 
     btc_le = Bitcoin.objects.last()
     eth_le = Etherium.objects.last()
+    ethbtc_le = EtheriumBTC.objects.last()
 
     btc_data = CalcClass().views_data(btc_le)
     eth_data = CalcClass().views_data(eth_le)
+    ethbtc_data = CalcClass().views_data(ethbtc_le)
 
     context = {
                'btc_data': btc_data,
                'eth_data': eth_data,
+               'ethbtc_data': ethbtc_data
               }
 
     return render(request, 'crypto/index.html', context)
 
-def pdatag(request, table):
-    if request.method == 'POST':
-        form = TimeForm(request.POST)
-        if form.is_valid():
-            tf = form.cleaned_data['time_frame']
-            script, div = GraphClass(table).graph_data(tf)
-            context = {"script": script,
-                       "div": div,
-                       "form": form,
-                       'coin': 'Bitcoin'}
-
-            return render(request, 'crypto/btc.html', context)
-
-    else:
-        form = TimeForm()
-        script, div = GraphClass(table).graph_data()
-        context = {"script": script,
-                   "div": div,
-                   "form": form}
-
-        return render(request, 'crypto/btc.html', context)
-
 
 @login_required(login_url='/mylogin/login/')
-def btc(request):
+def pdatag(request, table):
 
-    table = "bitcoin"
+    cdict = {'bitcoin': 'BTC/USD',
+             'etherium': 'ETH/USD',
+             'etheriumbtc': 'ETH/BTC'}
+
+    cur = cdict.get(table)
+
     if request.method == 'POST':
         form = TimeForm(request.POST)
         if form.is_valid():
@@ -59,7 +46,7 @@ def btc(request):
             context = {"script": script,
                        "div": div,
                        "form": form,
-                       'coin': 'Bitcoin'}
+                       'cur': cur}
 
             return render(request, 'crypto/btc.html', context)
 
@@ -68,33 +55,7 @@ def btc(request):
         script, div = GraphClass(table).graph_data()
         context = {"script": script,
                    "div": div,
-                   "form": form}
+                   "form": form,
+                   "cur": cur}
 
         return render(request, 'crypto/btc.html', context)
-
-@login_required(login_url='/mylogin/login')
-def eth(request):
-
-    table = 'etherium'
-    if request.method == 'POST':
-        form = TimeForm(request.POST)
-        if form.is_valid():
-            tf = form.cleaned_data['time_frame']
-            script, div = GraphClass(table).graph_data(tf)
-            context = {"script": script,
-                       "div": div,
-                       "form": form,
-                       'coin': 'Bitcoin'}
-
-            return render(request, 'crypto/btc.html', context)
-
-    else:
-        form = TimeForm()
-        script, div = GraphClass(table).graph_data()
-        context = {'script': script,
-                   'div': div,
-                   'form': form,
-                   'coin': 'Etherium'}
-
-        return render(request, 'crypto/btc.html', context)
-
