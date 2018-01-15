@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
+{% load crypto_app_filters %}
 {% block head %}
     <title>Crypto | Dissnitt</title>
     <link rel="stylesheet" href="{% static 'crypto/css/crypto.css' %}">
@@ -10,75 +11,80 @@
 {% endblock %}
 {% block content %}
 <div class="crypto_index">
-    <div class="bitp" id="btc_d">
-        <table>
-            <tr>
-                <th class="static">Bitcoin/ USD</th>
-            </tr>
-            <tr>
-                <td class="pbtc_usd" >$ {{ btc_data.0|floatformat:2  }}</td>
-            </tr>
-            <tr>
-                <td class="pbtc_usd">{{ btc_data.5|floatformat:2 }} %</td>
-            </tr>
-            <tr>
-                <td class="static">{{ btc_data.1 }} -> {{ btc_data.2 }}</td>
-            </tr>
-             <tr>
-                <td class="static">${{ btc_data.3 }} -> ${{ btc_data.4 }}</td>
-            </tr>
-            <tr>
-                <td class="tlink"><a href="{% url 'crypto:pdatag' 'bitcoin' %}">View Data</a></td>
-            </tr>
-        </table>
+    <div class="row1">
+        <div class="bitp" id="btc_d">
+            <table>
+                <tr>
+                    <th class="static">Bitcoin/ USD</th>
+                </tr>
+                <tr>
+                    <td class="pbtc_usd" >$ {{ btc_data.0|make_usd  }}</td>
+                </tr>
+                <tr>
+                    <td class="pbtc_usd">{{ btc_data.5|floatformat:2 }} %</td>
+                </tr>
+                <tr>
+                    <td class="static">{{ btc_data.1 }} -> {{ btc_data.2 }}</td>
+                </tr>
+                 <tr>
+                    <td class="static">${{ btc_data.3|make_usd }} -> ${{ btc_data.4|make_usd }}</td>
+                </tr>
+                <tr>
+                    <td class="tlink"><a href="{% url 'crypto:pdatag' 'bitcoin' %}">View Data</a></td>
+                </tr>
+            </table>
+        </div>
+        <div class="ethp" id="eth_d">
+            <table>
+                <tr>
+                    <th class="static">Etherium/ USD</th>
+                </tr>
+                <tr>
+                    <td class="peth_usd" >$ {{ eth_data.0|make_usd }}</td>
+                </tr>
+                <tr>
+                    <td class="peth_usd">{{ eth_data.5|floatformat:2 }} %</td>
+                </tr>
+                <tr>
+                    <td class="static">{{ eth_data.1 }} -> {{ eth_data.2 }}</td>
+                </tr>
+                <tr>
+                    <td class="static">${{ eth_data.3|make_usd }} -> ${{ eth_data.4|make_usd }}</td>
+                </tr>
+                <tr>
+                    <td class="tlink"><a href="{% url 'crypto:pdatag' 'etherium' %}">View Data</a></td>
+                </tr>
+            </table>
+        </div>
     </div>
-    <div class="ethp" id="eth_d">
-        <table>
-            <tr>
-                <th class="static">Etherium/ USD</th>
-            </tr>
-            <tr>
-                <td class="peth_usd" >$ {{ eth_data.0|floatformat:2 }}</td>
-            </tr>
-            <tr>
-                <td class="peth_usd">{{ eth_data.5|floatformat:2 }} %</td>
-            </tr>
-            <tr>
-                <td class="static">{{ eth_data.1 }} -> {{ eth_data.2 }}</td>
-            </tr>
-            <tr>
-                <td class="static">${{ eth_data.3 }} -> ${{ eth_data.4 }}</td>
-            </tr>
-            <tr>
-                <td class="tlink"><a href="{% url 'crypto:pdatag' 'etherium' %}">View Data</a></td>
-            </tr>
-        </table>
-    </div>
-    <div class="ethp" id="ethbtc_d">
-        <table>
-            <tr>
-                <th class="static">Etherium/ BTC</th>
-            </tr>
-            <tr>
-                <td class="peth_usd" > {{ ethbtc_data.0|floatformat:6 }}</td>
-            </tr>
-            <tr>
-                <td class="peth_usd">{{ ethbtc_data.5|floatformat:4}} %</td>
-            </tr>
-            <tr>
-                <td class="static">{{ ethbtc_data.1 }} -> {{ ethbtc_data.2 }}</td>
-            </tr>
-            <tr>
-                <td class="static">{{ ethbtc_data.3 }} -> {{ ethbtc_data.4 }}</td>
-            </tr>
-            <tr>
-                <td class="tlink"><a href="{% url 'crypto:pdatag' 'etherium' %}">View Data</a></td>
-            </tr>
-        </table>
+    <div class="row2">
+        <div class="ethpbtc" id="ethbtc_d">
+            <table>
+                <tr>
+                    <th class="static">Etherium/ BTC</th>
+                </tr>
+                <tr>
+                    <td class="peth_btc" > {{ ethbtc_data.0|floatformat:6 }} (${{ ethbtc_usd|make_usd }})</td>
+                </tr>
+                <tr>
+                    <td class="peth_btc">{{ ethbtc_data.5|floatformat:4}} %</td>
+                </tr>
+                <tr>
+                    <td class="static">{{ ethbtc_data.1 }} -> {{ ethbtc_data.2 }}</td>
+                </tr>
+                <tr>
+                    <td class="static">{{ ethbtc_data.3 }} -> {{ ethbtc_data.4 }}</td>
+                </tr>
+                <tr>
+                    <td class="tlinkbtc"><a href="{% url 'crypto:pdatag' 'etheriumbtc' %}">View Data</a></td>
+                </tr>
+            </table>
+        </div>
     </div>
 </div>
 <script>
     document.getElementById("btc_d").addEventListener("load", profitBGcolor('pbtc_usd', '{{ btc_data.0 }}'));
     document.getElementById("eth_d").addEventListener("load", profitBGcolor('peth_usd', '{{ eth_data.0 }}'));
+    document.getElementById("ethbtc_d").addEventListener("load", profitBGcolor('peth_btc', '{{ ethbtc_data.0 }}'));
 </script>
 {% endblock %}

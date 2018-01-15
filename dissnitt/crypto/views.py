@@ -20,10 +20,14 @@ def index(request):
     eth_data = CalcClass().views_data(eth_le)
     ethbtc_data = CalcClass().views_data(ethbtc_le)
 
+    btc_price = btc_le.gdax_price
+    ethbtc_usd = float(btc_price) * ethbtc_data[0]
+
     context = {
                'btc_data': btc_data,
                'eth_data': eth_data,
-               'ethbtc_data': ethbtc_data
+               'ethbtc_data': ethbtc_data,
+               'ethbtc_usd': ethbtc_usd
               }
 
     return render(request, 'crypto/index.html', context)

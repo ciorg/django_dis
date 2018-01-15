@@ -53,8 +53,8 @@ class GraphClass(object):
 
         gem_p, cb_p, kr_p, bi_p, bs_p, gd_p, bf_p = 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000
 
-        exchanges = {'gemini_price': [gem_source, 'Gemini', 'gem', gem_p, 0.0149, 'blue'],
-                     'coinbase_price': [cb_source, 'Coinbase', 'cb', cb_p, 0.0025, 'red'],
+        exchanges = {'gemini_price': [gem_source, 'Gemini', 'gem', gem_p, 0.0025, 'blue'],
+                     'coinbase_price': [cb_source, 'Coinbase', 'cb', cb_p, 0.0149, 'red'],
                      'kraken_price': [kr_source, 'Kraken', 'kr', kr_p, 0.0026, 'orange'],
                      'binance_price': [bi_source, 'Binance', 'bi', bi_p, 0.001, 'black'],
                      'bitfinex_price': [bf_source, 'Bitfinex', 'bf', bf_p, 0.002, 'green'],
@@ -105,8 +105,14 @@ class GraphClass(object):
 
         exchanges, p_source = self.data_sources(tf)
 
+        yf_dict = {'bitcoin': '{$0,0.00 USD}',
+                   'etherium': '{$0,0.00 USD}',
+                   'etheriumbtc': '{0.0000000} BTC'}
+
+        yf = yf_dict.get(self.table)
+
         hover = HoverTool(
-            tooltips=[("price", "$y{$0,0.00}"),
+            tooltips=[("price", '$y{}'.format(yf)),
                       ("Exchange", "@ex"),
                       ("Time", "@time{%m/%d %H:%M}")],
 
@@ -114,7 +120,7 @@ class GraphClass(object):
                         "time": 'datetime'}
         )
 
-        hover_p = HoverTool(tooltips=[("profit", "@profit{$0,0.00}"),
+        hover_p = HoverTool(tooltips=[("profit", "@profit{}".format(yf)),
                                       ("Direction", "@dir"),
                                       ("Time", "@time{%m/%d %H:%M}")],
 
