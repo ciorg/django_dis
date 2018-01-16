@@ -32,7 +32,20 @@ class GraphClass(object):
                                    'bitstamp_price, gdax_price, kraken_price',
 
                        'etheriumbtc': 'gemini_price, binance_price, bitfinex_price,'
-                                       'bitstamp_price, gdax_price, kraken_price'}
+                                       'bitstamp_price, gdax_price, kraken_price',
+
+                       'litecoin': 'coinbase_price, binance_price, bitfinex_price,'
+                                      'bitstamp_price, gdax_price, kraken_price',
+
+                       'litecoinbtc': 'binance_price, bitfinex_price, bitstamp_price, gdax_price, kraken_price',
+
+                       'ripplebtc': 'kraken_price, binance_price, bitfinex_price, bitstamp_price',
+
+                       'monerobtc': 'kraken_price, binance_price, bitfinex_price',
+
+                       'bitcashbtc': 'kraken_price, binance_price, bitfinex_price, bitstamp_price'
+
+                       }
 
         search = ('SELECT id, ptime, {} FROM crypto_{} order by id desc limit {}'
                   .format(cprice_dict.get(self.table), self.table, tf))
@@ -105,11 +118,11 @@ class GraphClass(object):
 
         exchanges, p_source = self.data_sources(tf)
 
-        yf_dict = {'bitcoin': '{$0,0.00 USD}',
-                   'etherium': '{$0,0.00 USD}',
-                   'etheriumbtc': '{0.0000000} BTC'}
+        if self.table in ('litecoinbtc', 'etheriumbtc', 'bitcashbtc', 'monerobtc', 'ripplebtc'):
+            yf = '{0.0000000} BTC'
 
-        yf = yf_dict.get(self.table)
+        else:
+            yf = '{$0,0.00. USD}'
 
         hover = HoverTool(
             tooltips=[("price", '$y{}'.format(yf)),

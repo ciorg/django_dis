@@ -109,6 +109,7 @@ div.ethp {
 
 div.ethpbtc {
     width: 25%;
+    float: left;
 
 }
 
@@ -147,6 +148,35 @@ div.ethpbtc {
 
 }
 
+.pltc_usd {
+    color: white;
+    border-collapse: collapse;
+    font-size: 1.5em;
+}
+
+.pltc_btc {
+    color: white;
+    border-collapse: collapse;
+    font-size: 1.5em;
+}
+
+.pxrp_btc {
+    color: white;
+    border-collapse: collapse;
+    font-size: 1.5em;
+}
+
+.pxmr_btc {
+    color: white;
+    border-collapse: collapse;
+    font-size: 1.5em;
+}
+
+.pbch_btc {
+    color: white;
+    border-collapse: collapse;
+    font-size: 1.5em;
+}
 
 input[type=number] {
                     border-style:none;

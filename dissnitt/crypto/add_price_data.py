@@ -6,24 +6,25 @@ from exchanges import Exchanges
 
 class AddPriceDataClass(object):
 
-    def __init__(self, coin, exchanges):
+    def __init__(self, coin):
 
-        ex_dict = {
-                    'all': ('cb', 'gem', 'kr', 'bi', 'bf', 'bs', 'gd'),
-                    'ethb': ('gem', 'kr', 'bi', 'bf', 'bs', 'gd'),
-                    }
+        cd_dict = {'btc': ('crypto_bitcoin',('cb', 'gem', 'kr', 'bi', 'bf', 'bs', 'gd')),
+                      'eth': ('crypto_etherium', ('cb', 'gem', 'kr', 'bi', 'bf', 'bs', 'gd')),
+                      'ethb': ('crypto_etheriumbtc', ('gem', 'kr', 'bi', 'bf', 'bs', 'gd')),
+                      'ltc': ('crypto_litecoin', ('cb', 'kr', 'bi', 'bf', 'bs', 'gd')),
+                      'ltcb': ('crypto_litecoinbtc', ('kr', 'bi', 'bf', 'bs', 'gd')),
+                      'xrpb': ('crypto_ripplebtc', ('kr', 'bi', 'bf', 'bs')),
+                      'xmrb': ('crypto_monerobtc', ('kr', 'bi', 'bf')),
+                      'bchb': ('crypto_bitcashbtc', ('kr', 'bi', 'bf', 'bs'))
+                      }
 
-        self.exchanges = ex_dict.get(exchanges)
-        self.prices_dict = {}
         logging.basicConfig(filename='logs/data.log', level=logging.INFO)
         logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S')
 
         self.coin = coin
-        table_dict = {'btc': 'crypto_bitcoin',
-                      'eth': 'crypto_etherium',
-                      'ethb': 'crypto_etheriumbtc'}
-
-        self.table = table_dict.get(coin)
+        self.exchanges = cd_dict.get(coin)[1]
+        self.table = cd_dict.get(coin)[0]
+        self.prices_dict = {}
 
     def get_price(self, exchange):
         p_dict = {'bi': 'Exchanges("{}").binance()',
