@@ -6,6 +6,5 @@ app_name = 'crypto'
 
 urlpatterns = [
     url(r'^index', views.index, name='index'),
-    url(r'^btc', views.btc, name='btc'),
-    url(r'^eth', views.eth, name='eth')
+    url(r'^pdatag/(?P<table>[a-z]+)/$', views.pdatag, name='pdatag')
 ]

@@ -1,3 +1,16 @@
+div.row1{
+            float: left;
+            margin-bottom: 1%;
+            width: 100%;
+
+}
+
+div.row2{
+         float: left;
+         width: 100%;
+}
+
+
 div.crypto_index a {
                      text-decoration: none;
                      color: white;
@@ -94,6 +107,76 @@ div.ethp {
    padding-right: 10px;
 }
 
+div.ethpbtc {
+    width: 25%;
+    float: left;
+
+}
+
+.ethpbtc table {
+    text-align: center;
+    -moz-border-radius: 12px;
+    -webkit-border-radius: 12px;
+    border-radius: 12px;
+    border: 3px solid orange;
+    border-collapse: seperate;
+    border-spacing: 0px;
+    width: 90%;
+    margin-bottom: 3%;
+}
+
+.peth_btc {
+    color: white;
+    border-collapse: collapse;
+    font-size: 1.5em;
+}
+
+.ethpbtc table th {
+   line-height: 1.5em;
+   padding-bottom: 3px;
+}
+
+.ethpbtc table td {
+   line-height: 1.5em;
+   padding-left: 10px;
+   padding-right: 10px;
+}
+
+.tlinkbtc {
+
+    background-color: orange;
+
+}
+
+.pltc_usd {
+    color: white;
+    border-collapse: collapse;
+    font-size: 1.5em;
+}
+
+.pltc_btc {
+    color: white;
+    border-collapse: collapse;
+    font-size: 1.5em;
+}
+
+.pxrp_btc {
+    color: white;
+    border-collapse: collapse;
+    font-size: 1.5em;
+}
+
+.pxmr_btc {
+    color: white;
+    border-collapse: collapse;
+    font-size: 1.5em;
+}
+
+.pbch_btc {
+    color: white;
+    border-collapse: collapse;
+    font-size: 1.5em;
+}
 
 input[type=number] {
                     border-style:none;

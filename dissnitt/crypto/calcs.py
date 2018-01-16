@@ -13,25 +13,26 @@ class CalcClass(object):
             if x >= 2:
                 p1, f1 = prices[x - 1].p, prices[x - 1].f
 
-                if p1 == 1.001 or p1 == 'nan':
+                if p1 == 0.000 or p1 == 'nan':
+
                     pass
 
                 else:
                     for y in range(x - 1, 0, -1):
                         p2, f2 = prices[y - 1].p, prices[y - 1].f
 
-                        if p2 == 1.001 or p2 == 'nan':
+                        if p2 == 0.000 or p2 == 'nan':
                             continue
 
                         else:
                             profit = abs(p1 - p2) - ((p1 * f1) + (p2 * f2))
 
-                        if profit > high:
-                            high = profit
-                            dir = [prices[x - 1], prices[y - 1]]
-                            dir.sort(key=lambda x: x.p)
+                            if profit > high:
+                                high = profit
+                                dir = [prices[x - 1], prices[y - 1]]
+                                dir.sort(key=lambda x: x.p)
 
-                            hp_data = (profit, "{}->{}".format(dir[0].ex, dir[1].ex))
+                                hp_data = (profit, "{}->{}".format(dir[0].ex, dir[1].ex))
 
             else:
                 pass
@@ -64,19 +65,30 @@ class CalcClass(object):
 
     def views_data(self, last_entry):
         pdata = namedtuple('pdata', 'ex, p, f')
+        prices = []
 
-        prices = (pdata("cb", float(last_entry.coinbase_price), 0.0149),
-                  pdata("gem", float(last_entry.gemini_price), 0.0025),
-                  pdata("kr", float(last_entry.kraken_price), 0.0026),
-                  pdata('bi', float(last_entry.binance_price), 0.001),
-                  pdata('bf', float(last_entry.bitfinex_price), 0.002),
-                  pdata('bs', float(last_entry.bitstamp_price), 0.0025),
-                  pdata('gd', float(last_entry.gdax_price), 0.0025))
+        exchanges_tuple = (("cb", 'coinbase_price', 0.0149),
+                           ("gem", 'gemini_price', 0.0025),
+                           ("kr", 'kraken_price', 0.0026),
+                           ('bi', 'binance_price', 0.001),
+                           ('bf', 'bitfinex_price', 0.002),
+                           ('bs', 'bitstamp_price', 0.0025),
+                           ('gd', 'gdax_price', 0.0025))
+
+        for ex in exchanges_tuple:
+
+            try:
+                price = eval("last_entry.{}".format(ex[1]))
+                pd = pdata(ex[0], float(price), ex[2])
+                prices.append(pd)
+
+            except AttributeError:
+                pass
 
         data = self.get_profit(prices)
         dir = data[1].split("->")
         ps = self.arbit_data(prices, dir)
-        p_perc = (data[0]/ps[0])
+        p_perc = (data[0]/ps[0])*100
 
-        return ("{:,.2f}".format(data[0]), self.exchanges(dir[0]), self.exchanges(dir[1]),
-                "{:,.2f}".format(ps[0]), "{:,.2f}".format(ps[1]), "{:,.2f}".format(p_perc))
+        return (data[0], self.exchanges(dir[0]), self.exchanges(dir[1]),
+                ps[0], ps[1], "{:,.2f}".format(p_perc))
