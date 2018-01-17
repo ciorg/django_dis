@@ -147,7 +147,7 @@ class Exchanges(object):
             return 0.000
 
     def kraken(self):
-        coins_dict = {'btc': ('XBTUSD', 'XBTUSD'),
+        coins_dict = {'btc': ('XBTUSD', 'XXBTZUSD'),
                       'eth': ('ETHUSD', 'XETHZUSD'),
                       'ltc': ('LTCUSD', 'XLTCZUSD'),
                       'ethb': ('ETHXBT', 'XETHXXBT'),
@@ -172,7 +172,7 @@ class Exchanges(object):
 
 
 if __name__ == "__main__":
-    c = Exchanges("bch")
+    c = Exchanges("btc")
     print("Binance: {}".format(c.binance()))
     print ("Bitfinex: {}".format(c.bitfinex()))
     print("Bitstamp: {}".format(c.bitstamp()))
