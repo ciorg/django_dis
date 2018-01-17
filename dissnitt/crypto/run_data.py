@@ -14,7 +14,7 @@ def activate(coin):
 
 parser = argparse.ArgumentParser(description='Runs the add data script')
 parser.add_argument("-go", help="Adds price data to the db, pick a coin to add", nargs=1,
-                    choices=['btc', 'eth', 'ethbtc', 'ltc', 'ltcb', 'bchb', 'xmrb', 'xrpb'])
+                    choices=['btc', 'eth', 'ethb', 'ltc', 'ltcb', 'bchb', 'xmrb', 'xrpb'])
 
 args = parser.parse_args()
 coin = args.go[0]

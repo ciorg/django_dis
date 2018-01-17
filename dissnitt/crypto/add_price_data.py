@@ -1,4 +1,5 @@
-import threading, logging
+import threading
+import logging
 import sqlite3
 from datetime import datetime
 from exchanges import Exchanges
@@ -46,7 +47,11 @@ class AddPriceDataClass(object):
             threads.append(t)
 
         for t in threads:
-            t.start()
+            try:
+                t.start()
+
+            except RuntimeError as e:
+                logging.exception("Error: {}, {}".format(e, self.coin))
 
         for t in threads:
             t.join()
@@ -104,7 +109,7 @@ class AddPriceDataClass(object):
             c.execute(search, data)
             conn.commit()
             conn.close()
-            logging.info("added data: {}".format(",".join([str(x) for x in data])))
+            logging.info("added data: {}, {}".format(self.coin, ",".join( [str(x) for x in data])))
 
         except Exception as e:
             logging.exception("{}".format(e))
