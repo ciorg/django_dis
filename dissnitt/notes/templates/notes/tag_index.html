@@ -23,7 +23,7 @@
 {% endblock %}
 {% block content %}
  <div class="tag_index">
-    {% for tag in tag_list|sort_tags_by_count_name %}
+    {% for tag in tag_list %}
         <p>
             <a href="{% url 'notes:by_tag' tag.id %}">{{tag.name}}</a>
             ({{ tag.note_set.all|length }})
@@ -38,6 +38,20 @@
             </div>
         </p>
      {% endfor %}
+     <div class="pagination">
+         <span class="direction">
+             {% if tag_list.has_previous %}
+                 <a href="?page={{ tag_list.previous_page_number }}"><<</a>
+             {% endif %}
+         </span>
+
+             Page {{ tag_list.number }} of {{ tag_list.paginator.num_pages }}
+         <span class="direction">
+             {% if tag_list.has_next %}
+                 <a href="?page={{ tag_list.next_page_number }}">>></a>
+             {% endif %}
+         </span>
+     </div>
  </div>
 
 {% endblock %}

@@ -45,5 +45,19 @@
                 </div>
             </div>
         {% endfor %}
+        <div class="pagination">
+            <span class="direction">
+                {% if note_list.has_previous %}
+                    <a href="?page={{ note_list.previous_page_number }}"><<</a>
+                {% endif %}
+            </span>
+
+                Page {{ note_list.number }} of {{ note_list.paginator.num_pages }}
+            <span class="direction">
+                {% if note_list.has_next %}
+                    <a href="?page={{ note_list.next_page_number }}">>></a>
+                {% endif %}
+            </span>
+        </div>
     </div>
 {% endblock %}

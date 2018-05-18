@@ -3,6 +3,7 @@ from django.views import generic, View
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from .models import Note, Tag
 from .forms import NoteForm, TagForm
 from django.views.generic.detail import SingleObjectMixin
@@ -15,7 +16,16 @@ class IndexView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         user = self.request.user
-        return Note.objects.filter(owner__pk=user.id).order_by('created_date')
+        notes = Note.objects.filter(owner__pk=user.id).order_by('created_date')
+        paginator = Paginator(notes, 10)
+        page = self.request.GET.get('page')
+        try:
+            note_page = paginator.page(page)
+        except PageNotAnInteger:
+            note_page = paginator.page(1)
+        except EmptyPage:
+            note_page = paginator.page(paginator.num_pages)
+        return note_page
 
     def get_context_data(self, **kwargs):
         context = super(IndexView, self).get_context_data(**kwargs)
@@ -138,7 +148,6 @@ class ByTagDetailView(LoginRequiredMixin, generic.DetailView):
         context['tags'] = get_tags(user.id)
         return context
 
-
 class TagIndexView(LoginRequiredMixin, generic.ListView):
 
     template_name = 'notes/tag_index.html'
@@ -146,4 +155,14 @@ class TagIndexView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         user = self.request.user
-        return get_tags(user.id)
+        tags = get_tags(user.id)
+        tags.sort(key=lambda x: len(x.note_set.all()), reverse=True)
+        paginator = Paginator(tags, 20)
+        page = self.request.GET.get('page')
+        try:
+            tag_page = paginator.page(page)
+        except PageNotAnInteger:
+            tag_page = paginator.page(1)
+        except EmptyPage:
+            tag_page = paginator.page(paginator.num_pages)
+        return tag_page
