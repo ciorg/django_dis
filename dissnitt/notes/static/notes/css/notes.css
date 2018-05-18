@@ -120,3 +120,12 @@ div.tag_index a {
                     text-decoration: none;
                     color: #304c89;
                   }
+span.direction {
+    font-size: 1.3em;
+    font-weight: bold;
+}
+
+div.pagination {
+    width: 20%;
+    margin: auto;
+}
