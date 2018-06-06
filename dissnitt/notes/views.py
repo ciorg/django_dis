@@ -17,7 +17,7 @@ class IndexView(LoginRequiredMixin, generic.ListView):
     def get_queryset(self):
         user = self.request.user
         notes = Note.objects.filter(owner__pk=user.id).order_by('created_date')
-        paginator = Paginator(notes, 10)
+        paginator = Paginator(notes, 8)
         page = self.request.GET.get('page')
         try:
             note_page = paginator.page(page)
