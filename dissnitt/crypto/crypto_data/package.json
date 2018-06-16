@@ -1,0 +1,19 @@
+{
+  "name": "crypto_data",
+  "version": "1.0.0",
+  "description": "crypto data",
+  "main": "index.js",
+  "dependencies": {
+    "bluebird": "^3.5.1",
+    "mongodb": "^3.0.5",
+    "request": "^2.87.0",
+    "request-promise": "^4.2.2",
+    "ws": "^5.1.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "ciorg",
+  "license": "ISC"
+}
